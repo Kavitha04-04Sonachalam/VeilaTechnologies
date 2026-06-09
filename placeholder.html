@@ -14,15 +14,15 @@
   <style>
     /* 1. Global Reset & Variables */
     :root {
-      --bg-dark: #070b19;
-      --bg-card: rgba(13, 22, 47, 0.45);
-      --border-card: rgba(0, 210, 255, 0.15);
-      --border-hover: rgba(0, 210, 255, 0.35);
-      --electric-blue: #00d2ff;
-      --glow-blue: rgba(0, 210, 255, 0.25);
-      --navy-deep: #030712;
+      --bg-dark: #000000;
+      --bg-card: rgba(10, 10, 10, 0.75);
+      --border-card: rgba(255, 77, 0, 0.15);
+      --border-hover: rgba(255, 77, 0, 0.35);
+      --electric-orange: #FF4D00;
+      --glow-orange: rgba(255, 77, 0, 0.25);
+      --black-deep: #000000;
       --text-main: #ffffff;
-      --text-muted: #94a3b8;
+      --text-muted: #8A8A8A;
     }
 
     * {
@@ -33,12 +33,11 @@
 
     body {
       background-color: var(--bg-dark);
-      background-image: radial-gradient(circle at 50% 50%, #0d1e3d 0%, var(--bg-dark) 80%);
+      background-image: radial-gradient(circle at 50% 50%, #120902 0%, var(--bg-dark) 80%);
       color: var(--text-main);
       font-family: 'Inter', sans-serif;
       min-height: 100vh;
       display: flex;
-      flex-col: column;
       flex-direction: column;
       justify-content: space-between;
       overflow-x: hidden;
@@ -52,7 +51,7 @@
       left: -200px;
       width: 400px;
       height: 400px;
-      background: radial-gradient(circle, var(--glow-blue) 0%, transparent 70%);
+      background: radial-gradient(circle, var(--glow-orange) 0%, transparent 70%);
       border-radius: 50%;
       pointer-events: none;
       z-index: 1;
@@ -97,7 +96,7 @@
       width: 50px;
       height: 50px;
       object-fit: contain;
-      filter: drop-shadow(0 0 10px rgba(0, 210, 255, 0.4));
+      filter: drop-shadow(0 0 10px rgba(255, 77, 0, 0.4));
       border-radius: 12px;
       background: rgba(255, 255, 255, 0.03);
       padding: 4px;
@@ -113,7 +112,7 @@
     }
 
     .brand-name span {
-      background: linear-gradient(135deg, #ffffff 30%, var(--electric-blue) 100%);
+      background: linear-gradient(135deg, #ffffff 30%, var(--electric-orange) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
@@ -159,7 +158,7 @@
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(90deg, transparent, rgba(0, 210, 255, 0.05), transparent);
+      background: linear-gradient(90deg, transparent, rgba(255, 77, 0, 0.05), transparent);
       transform: translateX(-100%);
       transition: transform 0.6s ease;
     }
@@ -167,7 +166,7 @@
     .card:hover {
       transform: translateY(-5px);
       border-color: var(--border-hover);
-      box-shadow: 0 20px 45px rgba(0, 210, 255, 0.1);
+      box-shadow: 0 20px 45px rgba(255, 77, 0, 0.1);
     }
 
     .card:hover::before {
@@ -180,7 +179,7 @@
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.15em;
-      color: var(--electric-blue);
+      color: var(--electric-orange);
       margin-bottom: 1rem;
       display: inline-block;
     }
@@ -195,7 +194,7 @@
     }
 
     .text-glow {
-      text-shadow: 0 0 20px rgba(0, 210, 255, 0.35);
+      text-shadow: 0 0 20px rgba(255, 77, 0, 0.35);
     }
 
     .subtext {
@@ -219,9 +218,9 @@
     .loading-bar-progress {
       height: 100%;
       width: 45%;
-      background: linear-gradient(90deg, var(--electric-blue), #3b82f6);
+      background: linear-gradient(90deg, var(--electric-orange), #FF6A00);
       border-radius: 10px;
-      box-shadow: 0 0 12px var(--electric-blue);
+      box-shadow: 0 0 12px var(--electric-orange);
       animation: progressSweep 2.2s infinite ease-in-out;
     }
 
@@ -256,8 +255,8 @@
     }
 
     .contact-mail:hover {
-      color: var(--electric-blue);
-      border-color: var(--electric-blue);
+      color: var(--electric-orange);
+      border-color: var(--electric-orange);
     }
 
     /* 6. GitHub Specific Content */
@@ -289,7 +288,7 @@
 
     .github-link-btn:hover {
       background: var(--text-main);
-      color: var(--navy-deep);
+      color: var(--black-deep);
       transform: translateY(-2px);
       box-shadow: 0 10px 20px rgba(255, 255, 255, 0.08);
     }
@@ -310,8 +309,8 @@
       }
       50% {
         transform: scale(1.06);
-        filter: drop-shadow(0 0 15px rgba(0, 210, 255, 0.35));
-        color: var(--electric-blue);
+        filter: drop-shadow(0 0 15px rgba(255, 77, 0, 0.35));
+        color: var(--electric-orange);
       }
     }
 
