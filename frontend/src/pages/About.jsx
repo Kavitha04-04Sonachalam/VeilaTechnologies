@@ -107,12 +107,20 @@ const About = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {coreValues.map((value) => (
-              <div key={value.title} className="p-6 rounded-xl bg-brand-dark-card/40 border border-white/5 hover:border-brand-orange-mid/10 transition-colors duration-200">
+            {coreValues.map((value, i) => (
+              <motion.div 
+                key={value.title} 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.05 }}
+                whileHover={{ y: -5 }}
+                className="p-6 rounded-xl glassmorphism hover:glassmorphism-hover hover:border-brand-orange-mid/20 transition-all duration-300 select-none"
+              >
                 <div className="text-brand-orange-light text-2xl mb-4">{value.icon}</div>
                 <h3 className="font-display font-bold text-base text-neutral-800 dark:text-white mb-2">{value.title}</h3>
-                <p className="text-xs text-neutral-800 dark:text-brand-muted leading-relaxed">{value.desc}</p>
-              </div>
+                <p className="text-xs text-neutral-800 dark:text-brand-muted leading-relaxed font-sans">{value.desc}</p>
+              </motion.div>
             ))}
           </div>
         </div>

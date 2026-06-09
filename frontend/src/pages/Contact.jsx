@@ -139,11 +139,21 @@ const Contact = () => {
             <div>
               <h4 className="text-xs font-bold uppercase tracking-widest text-neutral-800 dark:text-white mb-4">Connect Socially</h4>
               <div className="flex gap-4">
-                <a href="https://www.instagram.com/veilatechnologies?igsh=MjhvN3VoMTRlYTl1" target="_blank" rel="noreferrer" className="p-3.5 rounded bg-brand-dark-card border border-white/5 text-brand-gray hover:text-white hover:border-brand-orange-mid/30 transition-all cursor-pointer">
-                  <FaInstagram size={16} />
+                <a 
+                  href="https://www.instagram.com/veilatechnologies?igsh=MjhvN3VoMTRlYTl1" 
+                  target="_blank" 
+                  rel="noreferrer" 
+                  className="w-11 h-11 rounded-full flex items-center justify-center bg-neutral-100 hover:bg-brand-orange-mid dark:bg-brand-dark-card dark:hover:bg-brand-orange-mid border border-black/5 dark:border-white/5 text-neutral-700 hover:text-white dark:text-brand-gray dark:hover:text-white transition-all duration-300 shadow-xs hover:shadow-md hover:-translate-y-0.5 cursor-pointer"
+                >
+                  <FaInstagram size={18} />
                 </a>
-                <a href="https://www.youtube.com/@VeilaTechnologies" target="_blank" rel="noreferrer" className="p-3.5 rounded bg-brand-dark-card border border-white/5 text-brand-gray hover:text-white hover:border-brand-orange-mid/30 transition-all cursor-pointer">
-                  <FaYoutube size={16} />
+                <a 
+                  href="https://www.youtube.com/@VeilaTechnologies" 
+                  target="_blank" 
+                  rel="noreferrer" 
+                  className="w-11 h-11 rounded-full flex items-center justify-center bg-neutral-100 hover:bg-brand-orange-mid dark:bg-brand-dark-card dark:hover:bg-brand-orange-mid border border-black/5 dark:border-white/5 text-neutral-700 hover:text-white dark:text-brand-gray dark:hover:text-white transition-all duration-300 shadow-xs hover:shadow-md hover:-translate-y-0.5 cursor-pointer"
+                >
+                  <FaYoutube size={18} />
                 </a>
               </div>
             </div>

@@ -408,7 +408,8 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.05 }}
-                className="flex gap-4 p-5 rounded-xl bg-brand-dark-card/40 border border-white/5 hover:border-brand-orange-mid/10 transition-colors duration-300"
+                whileHover={{ y: -5 }}
+                className="flex gap-4 p-6 rounded-xl glassmorphism hover:glassmorphism-hover hover:border-brand-orange-mid/20 transition-all duration-300"
               >
                 <div className="text-brand-orange-light mt-1 shrink-0">
                   <FaCheckCircle size={18} />

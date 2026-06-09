@@ -127,7 +127,7 @@ const Services = () => {
               {/* CTA button */}
               <Link
                 to="/contact"
-                className="w-full sm:w-auto self-start mt-4 px-5 py-2.5 text-xs font-semibold rounded bg-neutral-900 hover:bg-neutral-800 dark:bg-brand-dark-card dark:hover:bg-brand-dark-hover border border-black/5 dark:border-white/5 text-white dark:text-white transition-all duration-300 flex items-center justify-center gap-1.5 cursor-pointer hover:border-brand-orange-mid/30"
+                className="w-full sm:w-auto self-start mt-4 px-5 py-2.5 text-xs font-semibold rounded gradient-brand hover:brightness-110 text-white shadow-xs glow-orange/15 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 Inquire Service <FaArrowRight size={10} />
               </Link>
