@@ -89,7 +89,7 @@ const Technologies = () => {
       </section>
 
       {/* Technology Grid */}
-      <section className="pb-24 px-6 relative">
+      <section className="pb-24 px-6 relative overflow-hidden">
         <div className="absolute w-[500px] h-[500px] rounded-full bg-brand-orange-mid/5 blur-[120px] bottom-10 left-1/2 -translate-x-1/2 pointer-events-none" />
         
         <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">

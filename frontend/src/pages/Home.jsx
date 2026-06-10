@@ -291,7 +291,7 @@ const Home = () => {
       </section>
 
       {/* 3. SERVICES SECTION */}
-      <section className="py-24 px-6 relative">
+      <section className="py-24 px-6 relative overflow-hidden">
         <div className="absolute w-[400px] h-[400px] rounded-full bg-brand-orange-mid/5 blur-[120px] top-1/3 -left-36 pointer-events-none" />
         <div className="max-w-7xl mx-auto">
           
@@ -430,7 +430,7 @@ const Home = () => {
       </section>
 
       {/* 6. FEATURED PROJECTS SECTION (API DRIVEN) */}
-      <section className="py-20 px-6 bg-neutral-50/40 dark:bg-brand-dark-card/30 border-y border-neutral-200 dark:border-brand-dark-border relative">
+      <section className="py-20 px-6 bg-neutral-50/40 dark:bg-brand-dark-card/30 border-y border-neutral-200 dark:border-brand-dark-border relative overflow-hidden">
         <div className="absolute w-[500px] h-[500px] rounded-full bg-brand-orange-mid/5 blur-[120px] bottom-0 right-0 pointer-events-none" />
         <div className="max-w-7xl mx-auto">
           

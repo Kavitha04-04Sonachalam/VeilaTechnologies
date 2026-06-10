@@ -84,7 +84,7 @@ const Contact = () => {
       </section>
 
       {/* Main Grid */}
-      <section className="pb-24 px-6 relative">
+      <section className="pb-24 px-6 relative overflow-hidden">
         <div className="absolute w-[500px] h-[500px] rounded-full bg-brand-orange-mid/5 blur-[120px] top-10 left-10 pointer-events-none" />
         
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 relative z-10">

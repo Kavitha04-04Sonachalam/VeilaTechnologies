@@ -69,7 +69,7 @@ const Services = () => {
       </section>
 
       {/* Services Grid */}
-      <section className="pb-24 px-6 relative">
+      <section className="pb-24 px-6 relative overflow-hidden">
         <div className="absolute w-[500px] h-[500px] rounded-full bg-brand-orange-mid/5 blur-[120px] top-1/3 left-1/2 -translate-x-1/2 pointer-events-none" />
         
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">

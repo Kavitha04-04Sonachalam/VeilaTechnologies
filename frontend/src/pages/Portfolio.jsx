@@ -103,7 +103,7 @@ const Portfolio = () => {
       </section>
 
       {/* Projects Grid */}
-      <section className="pb-24 px-6 relative">
+      <section className="pb-24 px-6 relative overflow-hidden">
         <div className="absolute w-[500px] h-[500px] rounded-full bg-brand-orange-mid/5 blur-[120px] top-20 left-10 pointer-events-none" />
         
         <div className="max-w-6xl mx-auto">

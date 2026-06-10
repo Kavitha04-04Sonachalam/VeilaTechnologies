@@ -40,7 +40,7 @@ const Navbar = () => {
   return (
     <header 
       className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
-        scrolled || location.pathname !== '/'
+        scrolled 
           ? 'bg-white/80 dark:bg-black/80 border-b border-black/5 dark:border-white/5 backdrop-blur-md py-3' 
           : 'bg-transparent py-5'
       }`}
