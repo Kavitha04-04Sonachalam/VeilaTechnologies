@@ -4,7 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FaCode, FaMobileAlt, FaBrain, FaCloud, FaPalette, FaChevronLeft, FaChevronRight,
   FaServer, FaDatabase, FaCogs, FaCheckCircle, FaStar, FaQuoteLeft, FaArrowRight,
-  FaReact, FaPython, FaDocker, FaAws, FaTimes, FaExternalLinkAlt, FaGithub
+  FaReact, FaPython, FaDocker, FaAws, FaTimes, FaExternalLinkAlt, FaGithub,
+  FaBriefcase, FaEnvelope, FaPhone, FaMapMarkerAlt
 } from 'react-icons/fa';
 import { 
   SiTailwindcss, SiFastapi, SiPostgresql, SiGithub 
@@ -18,12 +19,76 @@ const Home = () => {
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
   const [selectedProject, setSelectedProject] = useState(null);
 
+  // Homepage Contact Form State
+  const [contactName, setContactName] = useState("");
+  const [contactEmail, setContactEmail] = useState("");
+  const [contactPhone, setContactPhone] = useState("");
+  const [contactService, setContactService] = useState("");
+  const [contactMessage, setContactMessage] = useState("");
+  const [contactSubmitting, setContactSubmitting] = useState(false);
+  const [contactSuccess, setContactSuccess] = useState(false);
+  const [contactError, setContactError] = useState("");
+
   const getProjectLink = (url) => {
     if (!url) return '#';
     if (url.includes('veila.tech') || url.includes('github.com/veila-tech')) {
       return '/placeholder.html';
     }
     return url;
+  };
+
+  const handleContactSubmit = async (e) => {
+    e.preventDefault();
+    setContactSubmitting(true);
+    setContactError("");
+    setContactSuccess(false);
+
+    let cleanPhone = null;
+    if (contactPhone.trim() !== "") {
+      cleanPhone = contactPhone.replace(/[\s\-\(\)]/g, "");
+      const phoneRegex = /^\+?[1-9]\d{6,14}$/;
+      if (!phoneRegex.test(cleanPhone)) {
+        setContactError("Invalid phone number format. Must be 7 to 15 digits, optionally starting with '+'");
+        setContactSubmitting(false);
+        return;
+      }
+    }
+
+    try {
+      await axios.post('https://formspree.io/f/xlgknzbv', {
+        name: contactName,
+        email: contactEmail,
+        phone: cleanPhone || contactPhone || null,
+        service: contactService || null,
+        message: contactMessage
+      }, {
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+      setContactSuccess(true);
+      // Clean inputs
+      setContactName("");
+      setContactEmail("");
+      setContactPhone("");
+      setContactService("");
+      setContactMessage("");
+    } catch (err) {
+      console.error(err);
+      let errorMsg = "Failed to submit message. Please try again.";
+      if (err.response?.data?.errors) {
+        errorMsg = err.response.data.errors.map(e => e.message).join(", ");
+      } else if (err.response?.data?.detail) {
+        if (Array.isArray(err.response.data.detail)) {
+          errorMsg = err.response.data.detail.map(d => d.msg).join(", ");
+        } else {
+          errorMsg = err.response.data.detail;
+        }
+      }
+      setContactError(errorMsg);
+    } finally {
+      setContactSubmitting(false);
+    }
   };
 
   // Fetch Projects from API on mount
@@ -146,7 +211,7 @@ const Home = () => {
     <div className="pt-20">
       
       {/* 1. HERO SECTION */}
-      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden py-16 px-6 bg-grid-pattern">
+      <section id="home" className="relative min-h-[90vh] flex items-center justify-center overflow-hidden py-16 px-6 bg-grid-pattern">
         {/* Glow Effects */}
         <div className="absolute w-[500px] h-[500px] rounded-full bg-brand-orange-mid/10 blur-[120px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
         <div className="absolute w-72 h-72 rounded-full bg-brand-orange-light/5 blur-[90px] -top-10 left-10 pointer-events-none" />
@@ -290,8 +355,54 @@ const Home = () => {
         </div>
       </section>
 
+      {/* ABOUT SECTION (EMBEDDED) */}
+      <section id="about" className="py-24 px-6 relative">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+          >
+            <span className="text-xs text-brand-orange-light font-sans font-bold tracking-widest uppercase">Our Story</span>
+            <h2 className="font-display font-extrabold text-4xl sm:text-5xl text-neutral-800 dark:text-white mt-2 mb-6 leading-tight">
+              Transforming Ideas Into Digital Reality
+            </h2>
+            <p className="text-sm sm:text-base text-neutral-800 dark:text-brand-gray mb-4 leading-relaxed font-sans">
+              Veila Technologies is a technology-driven company focused on helping businesses grow through innovative digital solutions. We specialize in web development, software development, digital marketing, SEO, and social media management.
+            </p>
+            <p className="text-sm sm:text-base text-neutral-700 dark:text-brand-muted leading-relaxed font-sans">
+              Our goal is to provide reliable, creative, and result-oriented services that help businesses establish a strong online presence and achieve their growth objectives. At Veila Technologies, we believe in combining technology, creativity, and strategy to deliver solutions that create real value for our clients.
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.2 }}
+            className="relative h-[350px] rounded-2xl overflow-hidden border border-white/5 select-none"
+          >
+            <img 
+              src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=800&auto=format&fit=crop" 
+              alt="Team working" 
+              className="w-full h-full object-cover filter brightness-95" 
+            />
+            <div className="absolute inset-0 bg-gradient-to-tr from-brand-black/90 via-transparent to-transparent" />
+            
+            {/* Stats Overlay */}
+            <div className="absolute bottom-6 left-6 p-4 glassmorphism rounded-xl border border-white/5">
+              <span className="text-2xl font-extrabold text-brand-orange-light block font-display">100%</span>
+              <span className="text-[10px] text-brand-gray uppercase tracking-widest font-bold">Client Satisfaction Rate</span>
+            </div>
+          </motion.div>
+
+        </div>
+      </section>
+
       {/* 3. SERVICES SECTION */}
-      <section className="py-24 px-6 relative">
+      <section id="services" className="py-24 px-6 relative">
         <div className="absolute w-[400px] h-[400px] rounded-full bg-brand-orange-mid/5 blur-[120px] top-1/3 -left-36 pointer-events-none" />
         <div className="max-w-7xl mx-auto">
           
@@ -331,7 +442,7 @@ const Home = () => {
       </section>
 
       {/* 4. TECHNOLOGY SHOWCASE */}
-      <section className="py-20 px-6 bg-brand-dark-card/10 border-y border-neutral-200 dark:border-brand-dark-border">
+      <section id="technologies" className="py-20 px-6 bg-brand-dark-card/10 border-y border-neutral-200 dark:border-brand-dark-border">
         <div className="max-w-5xl mx-auto">
           
           <div className="text-center mb-12">
@@ -430,7 +541,7 @@ const Home = () => {
       </section>
 
       {/* 6. FEATURED PROJECTS SECTION (API DRIVEN) */}
-      <section className="py-20 px-6 bg-neutral-50/40 dark:bg-brand-dark-card/30 border-y border-neutral-200 dark:border-brand-dark-border relative">
+      <section id="portfolio" className="py-20 px-6 bg-neutral-50/40 dark:bg-brand-dark-card/30 border-y border-neutral-200 dark:border-brand-dark-border relative">
         <div className="absolute w-[500px] h-[500px] rounded-full bg-brand-orange-mid/5 blur-[120px] bottom-0 right-0 pointer-events-none" />
         <div className="max-w-7xl mx-auto">
           
@@ -535,7 +646,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Project Details Modal */}
+      {/* Project Coming Soon Modal */}
       <AnimatePresence>
         {selectedProject && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm select-none">
@@ -544,7 +655,7 @@ const Home = () => {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 15 }}
               transition={{ duration: 0.3 }}
-              className="w-full max-w-2xl bg-white dark:bg-brand-dark-card border border-black/10 dark:border-white/10 rounded-2xl overflow-hidden shadow-2xl p-6 md:p-8 flex flex-col max-h-[90vh] relative select-text"
+              className="w-full max-w-lg bg-white dark:bg-brand-dark-card border border-black/10 dark:border-white/10 rounded-2xl overflow-hidden shadow-2xl p-6 md:p-8 flex flex-col relative select-text"
             >
               {/* Close Button */}
               <button
@@ -555,66 +666,38 @@ const Home = () => {
                 <FaTimes size={14} />
               </button>
 
-              <div className="overflow-y-auto pr-1 flex flex-col gap-6">
+              <div className="flex flex-col gap-6 text-center">
                 {/* Image */}
-                <div className="relative h-64 md:h-80 w-full rounded-xl overflow-hidden bg-brand-dark-border select-none">
+                <div className="relative h-48 w-full rounded-xl overflow-hidden bg-brand-dark-border select-none">
                   <img 
                     src={selectedProject.image_url.includes("?") ? `${selectedProject.image_url}&fm=webp` : selectedProject.image_url} 
                     alt={selectedProject.title} 
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
-                  <h3 className="absolute bottom-6 left-6 font-display font-extrabold text-2xl text-white">
+                  <h3 className="absolute bottom-4 left-4 font-display font-extrabold text-xl text-white text-left">
                     {selectedProject.title}
                   </h3>
                 </div>
 
-                {/* Description */}
-                <div>
-                  <h4 className="text-xs font-bold uppercase tracking-widest text-brand-orange-light mb-2">Project Overview</h4>
-                  <p className="text-sm text-neutral-800 dark:text-brand-gray leading-relaxed font-sans">
-                    {selectedProject.description}
+                {/* Coming Soon Notice */}
+                <div className="py-2">
+                  <span className="text-xs text-brand-orange-light font-sans font-bold tracking-widest uppercase mb-2 block">Coming Soon</span>
+                  <h4 className="font-display font-extrabold text-2xl text-neutral-800 dark:text-white mb-3">
+                    Case Study Coming Soon!
+                  </h4>
+                  <p className="text-sm text-neutral-800 dark:text-brand-gray leading-relaxed font-sans max-w-sm mx-auto">
+                    We'll showcase this project in detail shortly.
                   </p>
                 </div>
 
-                {/* Tech Stack */}
-                <div>
-                  <h4 className="text-xs font-bold uppercase tracking-widest text-brand-orange-light mb-3">Technologies Employed</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedProject.tech_stack.split(',').map((tech) => (
-                      <span 
-                        key={tech.trim()} 
-                        className="px-3 py-1 text-xs font-semibold bg-neutral-100 dark:bg-brand-dark-border/60 text-neutral-700 dark:text-brand-gray rounded border border-black/5 dark:border-white/5"
-                      >
-                        {tech.trim()}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Actions */}
-                <div className="flex flex-col sm:flex-row gap-4 mt-2">
-                  {selectedProject.live_url && (
-                    <a
-                      href={getProjectLink(selectedProject.live_url)}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="flex-1 px-6 py-3 rounded text-sm font-semibold text-center gradient-brand hover:brightness-110 text-white shadow-lg glow-orange/20 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
-                    >
-                      Launch Live Demo <FaExternalLinkAlt size={12} />
-                    </a>
-                  )}
-                  {selectedProject.github_url && (
-                    <a
-                      href={getProjectLink(selectedProject.github_url)}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="flex-1 px-6 py-3 rounded text-sm font-semibold text-center bg-white hover:bg-neutral-100 dark:bg-brand-dark-card/80 dark:hover:bg-brand-dark-hover border border-black/10 dark:border-white/10 text-neutral-800 dark:text-white transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
-                    >
-                      Explore Codebase <FaGithub size={14} />
-                    </a>
-                  )}
-                </div>
+                {/* Action button to close */}
+                <button
+                  onClick={() => setSelectedProject(null)}
+                  className="w-full py-3 rounded text-sm font-semibold gradient-brand hover:brightness-110 text-white cursor-pointer transition-all duration-200"
+                >
+                  Close Notice
+                </button>
               </div>
             </motion.div>
           </div>
@@ -696,6 +779,38 @@ const Home = () => {
         </div>
       </section>
 
+      {/* CAREERS SECTION (EMBEDDED) */}
+      <section id="careers" className="py-24 px-6 relative overflow-hidden bg-neutral-50/50 dark:bg-brand-dark-card/10 border-y border-neutral-200 dark:border-brand-dark-border">
+        {/* Soft glow */}
+        <div className="absolute w-[400px] h-[400px] rounded-full bg-brand-orange-mid/5 blur-[120px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+        
+        <div className="max-w-4xl mx-auto text-center relative z-10">
+          <span className="text-xs text-brand-orange-light font-sans font-bold tracking-widest uppercase">Careers</span>
+          <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-neutral-800 dark:text-white mt-2 mb-6">
+            Join Our Engineering Team
+          </h2>
+          <div className="w-12 h-1 bg-brand-orange-mid mx-auto rounded-full mb-10" />
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="p-8 md:p-12 glassmorphism rounded-2xl border border-white/5 max-w-2xl mx-auto shadow-xl"
+          >
+            <div className="text-brand-orange-light text-5xl mb-6 flex justify-center">
+              <FaBriefcase />
+            </div>
+            <h3 className="font-display font-bold text-lg text-neutral-800 dark:text-white mb-3">
+              No Openings Currently
+            </h3>
+            <p className="text-sm text-neutral-800 dark:text-brand-gray leading-relaxed font-sans">
+              No openings currently, check back soon
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
       {/* 8. CALL TO ACTION (CTA) */}
       <section className="py-20 px-6">
         <div className="max-w-5xl mx-auto">
@@ -715,12 +830,192 @@ const Home = () => {
             </p>
             
             <Link
-              to="/contact"
+              to="/#contact"
               className="px-8 py-3.5 rounded text-sm font-bold uppercase tracking-wider gradient-brand hover:brightness-110 text-white shadow-lg glow-orange/20 transition-all duration-300 cursor-pointer"
             >
               Launch Project
             </Link>
           </motion.div>
+        </div>
+      </section>
+
+      {/* CONTACT FORM SECTION (EMBEDDED) */}
+      <section id="contact" className="py-24 px-6 relative border-t border-neutral-200 dark:border-brand-dark-border">
+        <div className="absolute w-[500px] h-[500px] rounded-full bg-brand-orange-mid/5 blur-[120px] top-10 left-10 pointer-events-none" />
+        
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <span className="text-xs text-brand-orange-light font-sans font-bold tracking-widest uppercase">Contact Us</span>
+            <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-neutral-800 dark:text-white mt-2 mb-4 leading-tight">
+              Let's Build Something Great
+            </h2>
+            <div className="w-12 h-1 bg-brand-orange-mid mx-auto rounded-full" />
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start relative z-10">
+            {/* Left Column: Office Details */}
+            <div className="lg:col-span-5 flex flex-col gap-10">
+              <div className="flex flex-col gap-6">
+                <h3 className="font-display font-extrabold text-2xl text-neutral-800 dark:text-white leading-none">
+                  Office Headquarters
+                </h3>
+                <p className="text-sm text-neutral-800 dark:text-brand-muted leading-relaxed">
+                  Our main consulting and design division operates out of our tech campus. Contact us to schedule an introductory video call or face-to-face workshop.
+                </p>
+                
+                <div className="flex flex-col gap-5 mt-4">
+                  {/* Location */}
+                  <div className="flex items-start gap-4">
+                    <div className="text-brand-orange-light mt-1 shrink-0"><FaMapMarkerAlt size={16} /></div>
+                    <div>
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-800 dark:text-white mb-1">Location</h4>
+                      <p className="text-xs text-neutral-800 dark:text-brand-gray font-sans">
+                        Virudhunagar, Tamilnadu, India
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Email */}
+                  <div className="flex items-start gap-4">
+                    <div className="text-brand-orange-light mt-1 shrink-0"><FaEnvelope size={16} /></div>
+                    <div>
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-800 dark:text-white mb-1">Email</h4>
+                      <p className="text-xs text-neutral-800 dark:text-brand-gray font-sans">
+                        veilatechnologies@gmail.com
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Phone */}
+                  <div className="flex items-start gap-4">
+                    <div className="text-brand-orange-light mt-1 shrink-0"><FaPhone size={16} /></div>
+                    <div>
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-800 dark:text-white mb-1">Phone</h4>
+                      <p className="text-xs text-neutral-800 dark:text-brand-gray font-sans">
+                        +91 8072196400
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column: Contact Form */}
+            <div className="lg:col-span-7">
+              <div className="p-8 glassmorphism rounded-2xl border border-white/5 relative">
+                <div className="absolute w-64 h-64 rounded-full bg-brand-orange-mid/5 blur-3xl bottom-6 right-6 pointer-events-none" />
+                
+                <AnimatePresence mode="wait">
+                  {contactSuccess ? (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="flex flex-col items-center justify-center text-center py-12 gap-4"
+                    >
+                      <div className="text-brand-orange-light text-5xl animate-bounce"><FaCheckCircle /></div>
+                      <h3 className="font-display font-bold text-xl text-neutral-800 dark:text-white">Message Transmitted!</h3>
+                      <p className="text-sm text-neutral-600 dark:text-brand-muted max-w-sm">
+                        Thank you for contacting Veila Technologies. We have logged your request and our lead engineering architect will follow up via email within 24 hours.
+                      </p>
+                      <button
+                        onClick={() => setContactSuccess(false)}
+                        className="mt-6 px-6 py-2.5 text-xs font-semibold rounded gradient-brand text-white cursor-pointer"
+                      >
+                        Send New Message
+                      </button>
+                    </motion.div>
+                  ) : (
+                    <form onSubmit={handleContactSubmit} className="flex flex-col gap-5 relative z-10">
+                      
+                      {contactError && (
+                        <div className="p-3 text-xs bg-red-950/40 border border-red-500/30 text-red-300 rounded font-medium">
+                          {contactError}
+                        </div>
+                      )}
+
+                      {/* Name & Email */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-xs text-brand-muted font-semibold">Your Name *</label>
+                          <input
+                            type="text"
+                            required
+                            value={contactName}
+                            onChange={(e) => setContactName(e.target.value)}
+                            className="w-full px-4 py-2.5 text-sm bg-white dark:bg-brand-black border border-neutral-300 dark:border-white/5 rounded focus:border-brand-orange-mid focus:outline-none text-neutral-800 dark:text-white"
+                            placeholder="Your Name"
+                          />
+                        </div>
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-xs text-brand-muted font-semibold">Your Email *</label>
+                          <input
+                            type="email"
+                            required
+                            value={contactEmail}
+                            onChange={(e) => setContactEmail(e.target.value)}
+                            className="w-full px-4 py-2.5 text-sm bg-white dark:bg-brand-black border border-neutral-300 dark:border-white/5 rounded focus:border-brand-orange-mid focus:outline-none text-neutral-800 dark:text-white"
+                            placeholder="Your Email"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Phone & Service */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-xs text-brand-muted font-semibold">Phone Number</label>
+                          <input
+                            type="text"
+                            value={contactPhone}
+                            onChange={(e) => setContactPhone(e.target.value)}
+                            className="w-full px-4 py-2.5 text-sm bg-white dark:bg-brand-black border border-neutral-300 dark:border-white/5 rounded focus:border-brand-orange-mid focus:outline-none text-neutral-800 dark:text-white"
+                            placeholder="Your Phone Number"
+                          />
+                        </div>
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-xs text-brand-muted font-semibold">Select a Service</label>
+                          <select
+                            value={contactService}
+                            onChange={(e) => setContactService(e.target.value)}
+                            className="w-full px-4 py-2.5 text-sm bg-white dark:bg-brand-black border border-neutral-300 dark:border-white/5 rounded focus:border-brand-orange-mid focus:outline-none text-neutral-800 dark:text-white"
+                          >
+                            <option value="">Select a Service</option>
+                            <option value="Web Development">Web Development</option>
+                            <option value="Software Development">Software Development</option>
+                            <option value="Digital Marketing">Digital Marketing</option>
+                            <option value="SEO">SEO</option>
+                            <option value="Social Media Management">Social Media Management</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      {/* Message */}
+                      <div className="flex flex-col gap-1.5">
+                        <label className="text-xs text-brand-muted font-semibold">Your Message *</label>
+                        <textarea
+                          required
+                          rows={5}
+                          value={contactMessage}
+                          onChange={(e) => setContactMessage(e.target.value)}
+                          className="w-full px-4 py-2.5 text-sm bg-white dark:bg-brand-black border border-neutral-300 dark:border-white/5 rounded focus:border-brand-orange-mid focus:outline-none text-neutral-800 dark:text-white resize-none"
+                          placeholder="Your Message"
+                        />
+                      </div>
+
+                      {/* Submit Button */}
+                      <button
+                        type="submit"
+                        disabled={contactSubmitting}
+                        className="w-full mt-2 py-3 rounded text-sm font-semibold gradient-brand hover:brightness-110 text-white cursor-pointer disabled:opacity-50 transition-all duration-200"
+                      >
+                        {contactSubmitting ? "Transmitting..." : "Send Message"}
+                      </button>
+
+                    </form>
+                  )}
+                </AnimatePresence>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 

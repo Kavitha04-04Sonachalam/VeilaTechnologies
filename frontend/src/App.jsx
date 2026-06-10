@@ -16,11 +16,9 @@ import { ThemeProvider } from './context/ThemeContext';
 
 // Route handler for page titles & scroll to top
 const RouteChangeHandler = () => {
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'instant' });
-
     const titles = {
       '/': 'Veila Technologies | Premium Digital Innovation',
       '/about': 'About Us | Veila Technologies',
@@ -32,7 +30,20 @@ const RouteChangeHandler = () => {
     };
     
     document.title = titles[pathname] || 'Veila Technologies';
-  }, [pathname]);
+
+    if (hash) {
+      const id = hash.replace('#', '');
+      const element = document.getElementById(id);
+      if (element) {
+        const timer = setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+        return () => clearTimeout(timer);
+      }
+    } else {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
+  }, [pathname, hash]);
 
   return null;
 };

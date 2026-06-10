@@ -2,6 +2,11 @@
 
 @import "tailwindcss";
 
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+}
+
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {

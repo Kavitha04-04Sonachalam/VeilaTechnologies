@@ -205,7 +205,7 @@ const Portfolio = () => {
         </div>
       </section>
 
-      {/* Project Details Modal */}
+      {/* Project Coming Soon Modal */}
       <AnimatePresence>
         {selectedProject && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm select-none">
@@ -214,7 +214,7 @@ const Portfolio = () => {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 15 }}
               transition={{ duration: 0.3 }}
-              className="w-full max-w-2xl bg-white dark:bg-brand-dark-card border border-black/10 dark:border-white/10 rounded-2xl overflow-hidden shadow-2xl p-6 md:p-8 flex flex-col max-h-[90vh] relative select-text"
+              className="w-full max-w-lg bg-white dark:bg-brand-dark-card border border-black/10 dark:border-white/10 rounded-2xl overflow-hidden shadow-2xl p-6 md:p-8 flex flex-col relative select-text"
             >
               {/* Close Button */}
               <button
@@ -225,66 +225,38 @@ const Portfolio = () => {
                 <FaTimes size={14} />
               </button>
 
-              <div className="overflow-y-auto pr-1 flex flex-col gap-6">
+              <div className="flex flex-col gap-6 text-center">
                 {/* Image */}
-                <div className="relative h-64 md:h-80 w-full rounded-xl overflow-hidden bg-brand-dark-border select-none">
+                <div className="relative h-48 w-full rounded-xl overflow-hidden bg-brand-dark-border select-none">
                   <img 
                     src={selectedProject.image_url.includes("?") ? `${selectedProject.image_url}&fm=webp` : selectedProject.image_url} 
                     alt={selectedProject.title} 
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
-                  <h3 className="absolute bottom-6 left-6 font-display font-extrabold text-2xl text-white">
+                  <h3 className="absolute bottom-4 left-4 font-display font-extrabold text-xl text-white text-left">
                     {selectedProject.title}
                   </h3>
                 </div>
 
-                {/* Description */}
-                <div>
-                  <h4 className="text-xs font-bold uppercase tracking-widest text-brand-orange-light mb-2">Project Overview</h4>
-                  <p className="text-sm text-neutral-800 dark:text-brand-gray leading-relaxed font-sans">
-                    {selectedProject.description}
+                {/* Coming Soon Notice */}
+                <div className="py-2">
+                  <span className="text-xs text-brand-orange-light font-sans font-bold tracking-widest uppercase mb-2 block">Coming Soon</span>
+                  <h4 className="font-display font-extrabold text-2xl text-neutral-800 dark:text-white mb-3">
+                    Case Study Coming Soon!
+                  </h4>
+                  <p className="text-sm text-neutral-800 dark:text-brand-gray leading-relaxed font-sans max-w-sm mx-auto">
+                    We'll showcase this project in detail shortly.
                   </p>
                 </div>
 
-                {/* Tech Stack */}
-                <div>
-                  <h4 className="text-xs font-bold uppercase tracking-widest text-brand-orange-light mb-3">Technologies Employed</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedProject.tech_stack.split(',').map((tech) => (
-                      <span 
-                        key={tech.trim()} 
-                        className="px-3 py-1 text-xs font-semibold bg-neutral-100 dark:bg-brand-dark-border/60 text-neutral-700 dark:text-brand-gray rounded border border-black/5 dark:border-white/5"
-                      >
-                        {tech.trim()}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Actions */}
-                <div className="flex flex-col sm:flex-row gap-4 mt-2">
-                  {selectedProject.live_url && (
-                    <a
-                      href={getProjectLink(selectedProject.live_url)}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="flex-1 px-6 py-3 rounded text-sm font-semibold text-center gradient-brand hover:brightness-110 text-white shadow-lg glow-orange/20 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
-                    >
-                      Launch Live Demo <FaExternalLinkAlt size={12} />
-                    </a>
-                  )}
-                  {selectedProject.github_url && (
-                    <a
-                      href={getProjectLink(selectedProject.github_url)}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="flex-1 px-6 py-3 rounded text-sm font-semibold text-center bg-white hover:bg-neutral-100 dark:bg-brand-dark-card/80 dark:hover:bg-brand-dark-hover border border-black/10 dark:border-white/10 text-neutral-800 dark:text-white transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
-                    >
-                      Explore Codebase <FaGithub size={14} />
-                    </a>
-                  )}
-                </div>
+                {/* Action button to close */}
+                <button
+                  onClick={() => setSelectedProject(null)}
+                  className="w-full py-3 rounded text-sm font-semibold gradient-brand hover:brightness-110 text-white cursor-pointer transition-all duration-200"
+                >
+                  Close Notice
+                </button>
               </div>
             </motion.div>
           </div>

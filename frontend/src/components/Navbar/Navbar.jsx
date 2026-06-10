@@ -22,19 +22,48 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const [activeSection, setActiveSection] = useState('home');
+
   // Close mobile menu when location changes
   useEffect(() => {
     setIsOpen(false);
   }, [location]);
 
+  // Scroll spy logic for active section indicator
+  useEffect(() => {
+    if (location.pathname !== '/') return;
+
+    const handleScrollSpy = () => {
+      const sections = ['home', 'about', 'services', 'technologies', 'portfolio', 'careers', 'contact'];
+      const scrollPosition = window.scrollY + 120; // navbar offset
+
+      for (const section of sections) {
+        const el = document.getElementById(section);
+        if (el) {
+          const top = el.offsetTop;
+          const height = el.offsetHeight;
+          if (scrollPosition >= top && scrollPosition < top + height) {
+            setActiveSection(section);
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScrollSpy);
+    handleScrollSpy(); // initial check
+
+    return () => window.removeEventListener('scroll', handleScrollSpy);
+  }, [location.pathname]);
+
   const navLinks = [
-    { name: 'Home', path: '/' },
-    { name: 'About', path: '/about' },
-    { name: 'Services', path: '/services' },
-    { name: 'Technologies', path: '/technologies' },
-    { name: 'Portfolio', path: '/portfolio' },
-    { name: 'Careers', path: '/careers' },
-    { name: 'Contact', path: '/contact' }
+    { name: 'Home', hash: 'home' },
+    { name: 'About', hash: 'about' },
+    { name: 'Services', hash: 'services' },
+    { name: 'Technologies', hash: 'technologies' },
+    { name: 'Portfolio', hash: 'portfolio' },
+    { name: 'Careers', hash: 'careers' },
+    { name: 'Contact', hash: 'contact' }
   ];
 
   return (
@@ -47,7 +76,7 @@ const Navbar = () => {
     >
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
         {/* Logo and Brand Title */}
-        <Link to="/" className="flex items-center gap-3 group">
+        <Link to="/#home" className="flex items-center gap-3 group">
           <div className="bg-neutral-950/90 dark:bg-transparent p-1.5 rounded-lg transition-colors duration-300">
             <img 
               src="/logo.png" 
@@ -67,32 +96,29 @@ const Navbar = () => {
 
         {/* Desktop Navigation Links */}
         <nav className="hidden lg:flex items-center gap-8">
-          {navLinks.map((link) => (
-            <NavLink
-              key={link.name}
-              to={link.path}
-              className={({ isActive }) => 
-                `relative font-sans text-sm font-medium transition-colors duration-200 py-1.5 ${
+          {navLinks.map((link) => {
+            const isActive = location.pathname === '/' && activeSection === link.hash;
+            return (
+              <Link
+                key={link.name}
+                to={`/#${link.hash}`}
+                className={`relative font-sans text-sm font-medium transition-colors duration-200 py-1.5 ${
                   isActive 
                     ? 'text-brand-orange-light' 
                     : 'text-neutral-600 hover:text-black dark:text-brand-gray dark:hover:text-white'
-                }`
-              }
-            >
-              {({ isActive }) => (
-                <>
-                  {link.name}
-                  {isActive && (
-                    <motion.div
-                      layoutId="activeNavIndicator"
-                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand-orange-mid rounded-full"
-                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                    />
-                  )}
-                </>
-              )}
-            </NavLink>
-          ))}
+                }`}
+              >
+                {link.name}
+                {isActive && (
+                  <motion.div
+                    layoutId="activeNavIndicator"
+                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand-orange-mid rounded-full"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
+              </Link>
+            );
+          })}
         </nav>
 
         {/* Right Actions: Theme Toggle, Admin Dashboard Button, Mobile Menu Trigger */}
@@ -128,24 +154,25 @@ const Navbar = () => {
             className="lg:hidden w-full bg-neutral-50/95 dark:bg-black/95 border-b border-neutral-200 dark:border-brand-dark-border overflow-hidden"
           >
             <div className="px-6 py-6 flex flex-col gap-4">
-              {navLinks.map((link) => (
-                <NavLink
-                  key={link.name}
-                  to={link.path}
-                  className={({ isActive }) =>
-                    `font-sans text-base font-semibold py-2 block border-l-2 pl-3 ${
+              {navLinks.map((link) => {
+                const isActive = location.pathname === '/' && activeSection === link.hash;
+                return (
+                  <Link
+                    key={link.name}
+                    to={`/#${link.hash}`}
+                    className={`font-sans text-base font-semibold py-2 block border-l-2 pl-3 ${
                       isActive
                         ? 'border-brand-orange-mid text-brand-orange-light'
                         : 'border-transparent text-neutral-600 hover:text-black dark:text-brand-gray dark:hover:text-white'
-                    }`
-                  }
-                >
-                  {link.name}
-                </NavLink>
-              ))}
+                    }`}
+                  >
+                    {link.name}
+                  </Link>
+                );
+              })}
               <div className="pt-4 border-t border-black/5 dark:border-white/5 flex flex-col gap-3">
                 <Link
-                  to="/contact"
+                  to="/#contact"
                   className="w-full text-center py-2.5 text-sm font-semibold rounded gradient-brand text-white transition-all duration-200"
                 >
                   Get Started
