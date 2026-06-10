@@ -386,10 +386,8 @@ const Services = () => {
                   {/* Action CTA Button */}
                   <RippleButton
                     to="/contact"
-                    className={`w-full py-3.5 rounded text-xs font-bold uppercase tracking-wider text-center shadow-lg transition-all duration-300 ${
-                      tier.highlight 
-                        ? 'gradient-brand text-white glow-orange/20 hover:brightness-110' 
-                        : 'bg-white hover:bg-neutral-100 dark:bg-brand-dark-card dark:hover:bg-brand-dark-hover border border-black/10 dark:border-white/10 text-neutral-800 dark:text-white'
+                    className={`w-full py-3.5 rounded text-xs font-bold uppercase tracking-wider text-center shadow-lg transition-all duration-300 gradient-brand text-white hover:brightness-110 ${
+                      tier.highlight ? 'glow-orange/20' : 'glow-orange/15'
                     }`}
                   >
                     {tier.cta}

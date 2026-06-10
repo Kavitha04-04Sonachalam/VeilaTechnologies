@@ -18,9 +18,27 @@ const RippleButton = ({
     const rect = button.getBoundingClientRect();
     const size = Math.max(rect.width, rect.height);
     
+    // Resolve client coordinates for both desktop clicks and mobile touch taps
+    let clientX = e.clientX;
+    let clientY = e.clientY;
+
+    if (e.touches && e.touches.length > 0) {
+      clientX = e.touches[0].clientX;
+      clientY = e.touches[0].clientY;
+    } else if (e.changedTouches && e.changedTouches.length > 0) {
+      clientX = e.changedTouches[0].clientX;
+      clientY = e.changedTouches[0].clientY;
+    }
+
+    // Default to button center if coordinates are missing or zero (e.g. keyboard click or touch trigger)
+    if (clientX === undefined || clientY === undefined || (clientX === 0 && clientY === 0)) {
+      clientX = rect.left + rect.width / 2;
+      clientY = rect.top + rect.height / 2;
+    }
+
     // Position ripple relative to button
-    const x = e.clientX - rect.left - size / 2;
-    const y = e.clientY - rect.top - size / 2;
+    const x = clientX - rect.left - size / 2;
+    const y = clientY - rect.top - size / 2;
 
     const newRipple = {
       id: Date.now() + Math.random(),

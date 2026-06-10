@@ -197,7 +197,7 @@ const About = () => {
                 key={item.year}
                 initial={{ opacity: 0, x: -30 }}
                 whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
+                viewport={{ once: true, margin: "-10px" }}
                 transition={{ duration: 0.6, delay: i * 0.1 }}
                 className="relative"
               >

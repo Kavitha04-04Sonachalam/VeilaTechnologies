@@ -309,7 +309,7 @@ const Home = () => {
       <motion.section 
         initial="hidden"
         whileInView="show"
-        viewport={{ once: true, margin: "-100px" }}
+        viewport={{ once: true, margin: "-15px" }}
         variants={staggerContainer}
         className="py-16 bg-neutral-50/50 dark:bg-brand-dark-card/30 border-y border-neutral-200 dark:border-brand-dark-border"
       >
