@@ -40,12 +40,12 @@ const Navbar = () => {
   return (
     <header 
       className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
-        scrolled 
+        scrolled || location.pathname !== '/'
           ? 'bg-white/80 dark:bg-black/80 border-b border-black/5 dark:border-white/5 backdrop-blur-md py-3' 
           : 'bg-transparent py-5'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
         {/* Logo and Brand Title */}
         <Link to="/" className="flex items-center gap-3 group">
           <div className="bg-neutral-950/90 dark:bg-transparent p-1.5 rounded-lg transition-colors duration-300">
@@ -109,7 +109,7 @@ const Navbar = () => {
           {/* Mobile menu icon */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="lg:hidden p-2 pr-0 sm:pr-2 text-neutral-600 hover:text-black dark:text-brand-gray dark:hover:text-white cursor-pointer"
+            className="lg:hidden p-2 text-neutral-600 hover:text-black dark:text-brand-gray dark:hover:text-white cursor-pointer"
             aria-label="Toggle Navigation Menu"
           >
             {isOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
@@ -127,7 +127,7 @@ const Navbar = () => {
             transition={{ duration: 0.3, ease: 'easeInOut' }}
             className="lg:hidden w-full bg-neutral-50/95 dark:bg-black/95 border-b border-neutral-200 dark:border-brand-dark-border max-h-[calc(100vh-80px)] overflow-y-auto"
           >
-            <div className="px-4 sm:px-6 py-6 flex flex-col gap-4">
+            <div className="px-6 py-6 flex flex-col gap-4">
               {navLinks.map((link) => (
                 <NavLink
                   key={link.name}
