@@ -363,23 +363,23 @@ const Admin = () => {
             {activeTab === "Analytics" && (
               <div className="flex flex-col gap-8">
                 {/* Stats Counters Grid */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-                  <div className="p-6 rounded-2xl glassmorphism border border-white/5 flex flex-col gap-2 relative overflow-hidden">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                  <div className="p-4 sm:p-6 rounded-2xl glassmorphism border border-white/5 flex flex-col gap-2 relative overflow-hidden">
                     <span className="text-xs text-brand-muted uppercase font-bold tracking-widest block">Contacts</span>
                     <span className="font-display font-extrabold text-3xl text-white">{stats.total_contacts}</span>
                     <FaEnvelope className="absolute right-4 bottom-4 text-brand-orange-mid/10 text-4xl" />
                   </div>
-                  <div className="p-6 rounded-2xl glassmorphism border border-white/5 flex flex-col gap-2 relative overflow-hidden">
+                  <div className="p-4 sm:p-6 rounded-2xl glassmorphism border border-white/5 flex flex-col gap-2 relative overflow-hidden">
                     <span className="text-xs text-brand-muted uppercase font-bold tracking-widest block">Applications</span>
                     <span className="font-display font-extrabold text-3xl text-white">{stats.total_applications}</span>
                     <FaUser className="absolute right-4 bottom-4 text-brand-orange-mid/10 text-4xl" />
                   </div>
-                  <div className="p-6 rounded-2xl glassmorphism border border-white/5 flex flex-col gap-2 relative overflow-hidden">
+                  <div className="p-4 sm:p-6 rounded-2xl glassmorphism border border-white/5 flex flex-col gap-2 relative overflow-hidden">
                     <span className="text-xs text-brand-muted uppercase font-bold tracking-widest block">Projects</span>
                     <span className="font-display font-extrabold text-3xl text-white">{stats.total_projects}</span>
                     <FaFolder className="absolute right-4 bottom-4 text-brand-orange-mid/10 text-4xl" />
                   </div>
-                  <div className="p-6 rounded-2xl glassmorphism border border-white/5 flex flex-col gap-2 relative overflow-hidden">
+                  <div className="p-4 sm:p-6 rounded-2xl glassmorphism border border-white/5 flex flex-col gap-2 relative overflow-hidden">
                     <span className="text-xs text-brand-muted uppercase font-bold tracking-widest block">Job Positions</span>
                     <span className="font-display font-extrabold text-3xl text-white">{stats.total_jobs}</span>
                     <FaBriefcase className="absolute right-4 bottom-4 text-brand-orange-mid/10 text-4xl" />

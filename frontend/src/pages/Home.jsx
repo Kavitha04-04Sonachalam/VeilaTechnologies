@@ -359,7 +359,7 @@ const Home = () => {
           </div>
 
           {/* Tab Content */}
-          <div className="glassmorphism rounded-2xl p-8 border border-white/5 relative overflow-hidden min-h-[220px] flex items-center justify-center">
+          <div className="glassmorphism rounded-2xl p-4 sm:p-8 border border-white/5 relative overflow-hidden min-h-[220px] flex items-center justify-center">
             {/* Ambient orange pulse */}
             <div className="absolute w-64 h-64 rounded-full bg-brand-orange-mid/5 blur-3xl -top-12 -left-12 pointer-events-none" />
             
@@ -375,7 +375,7 @@ const Home = () => {
                 {techStack[activeTechTab].map((tech) => (
                   <div 
                     key={tech.name}
-                    className="p-6 rounded-xl bg-white/60 dark:bg-brand-black/40 border border-black/5 dark:border-white/5 flex flex-col items-center justify-center gap-3 hover:border-brand-orange-mid/20 transition-colors duration-200"
+                    className="p-4 sm:p-6 rounded-xl bg-white/60 dark:bg-brand-black/40 border border-black/5 dark:border-white/5 flex flex-col items-center justify-center gap-3 hover:border-brand-orange-mid/20 transition-colors duration-200"
                   >
                     <div className="text-4xl">{tech.icon}</div>
                     <span className="font-sans font-semibold text-sm text-neutral-800 dark:text-brand-gray">{tech.name}</span>
@@ -463,7 +463,7 @@ const Home = () => {
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {projects.map((proj) => (
                 <motion.div
                   key={proj.id}

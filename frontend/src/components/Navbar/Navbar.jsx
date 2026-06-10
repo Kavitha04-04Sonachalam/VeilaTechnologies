@@ -125,7 +125,7 @@ const Navbar = () => {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3, ease: 'easeInOut' }}
-            className="lg:hidden w-full bg-neutral-50/95 dark:bg-black/95 border-b border-neutral-200 dark:border-brand-dark-border overflow-hidden"
+            className="lg:hidden w-full bg-neutral-50/95 dark:bg-black/95 border-b border-neutral-200 dark:border-brand-dark-border max-h-[calc(100vh-80px)] overflow-y-auto"
           >
             <div className="px-6 py-6 flex flex-col gap-4">
               {navLinks.map((link) => (
