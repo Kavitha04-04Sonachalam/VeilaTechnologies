@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  FaCode, FaMobileAlt, FaBrain, FaCloud, FaPalette, FaChevronLeft, FaChevronRight,
-  FaServer, FaDatabase, FaCogs, FaCheckCircle, FaStar, FaQuoteLeft, FaArrowRight,
+  FaCode, FaMobileAlt, FaBrain, FaPalette, FaChevronLeft, FaChevronRight,
+  FaServer, FaDatabase, FaCheckCircle, FaStar, FaQuoteLeft, FaArrowRight,
   FaReact, FaPython, FaDocker, FaAws, FaTimes, FaExternalLinkAlt, FaGithub
 } from 'react-icons/fa';
 import { 
@@ -11,6 +11,33 @@ import {
 } from 'react-icons/si';
 import axios from 'axios';
 import StatsCounter from '../components/Stats/StatsCounter';
+import RippleButton from '../components/Button/RippleButton';
+
+// Word-by-word text reveal scroll effect
+const TextReveal = ({ text, className = "" }) => {
+  const words = text.split(" ");
+  return (
+    <span className={`inline-flex flex-wrap ${className}`}>
+      {words.map((word, index) => (
+        <span key={index} className="overflow-hidden inline-block mr-[0.25em]">
+          <motion.span
+            initial={{ y: "100%", opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ 
+              duration: 0.6, 
+              delay: index * 0.05, 
+              ease: [0.16, 1, 0.3, 1] 
+            }}
+            className="inline-block"
+          >
+            {word}
+          </motion.span>
+        </span>
+      ))}
+    </span>
+  );
+};
 
 const Home = () => {
   const [projects, setProjects] = useState([]);
@@ -142,6 +169,27 @@ const Home = () => {
     setCurrentTestimonial((prev) => (prev - 1 + testimonials.length) % testimonials.length);
   };
 
+  // Animation Variants
+  const staggerContainer = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const fadeInUp = {
+    hidden: { opacity: 0, y: 40 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } }
+  };
+
+  const scaleIn = {
+    hidden: { opacity: 0, scale: 0.94 },
+    show: { opacity: 1, scale: 1, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } }
+  };
+
   return (
     <div className="pt-20">
       
@@ -153,30 +201,30 @@ const Home = () => {
         
         {/* Floating tech background elements */}
         <motion.div 
-          animate={{ y: [0, -15, 0], x: [0, 5, 0] }}
+          animate={{ y: [0, -15, 0], rotate: [0, 5, 0] }}
           transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
-          className="absolute hidden md:block top-1/4 left-1/12 p-3 glassmorphism rounded-xl border border-white/5 opacity-40 hover:opacity-100 transition-opacity"
+          className="absolute hidden md:block top-1/4 left-1/12 p-3 glassmorphism rounded-xl border border-white/5 opacity-40 hover:opacity-100 hover:scale-110 hover:border-brand-orange-mid/40 transition-all duration-300 shadow-md"
         >
           <FaReact className="text-sky-400 text-3xl" />
         </motion.div>
         <motion.div 
-          animate={{ y: [0, 20, 0], x: [0, -8, 0] }}
+          animate={{ y: [0, 20, 0], rotate: [0, -6, 0] }}
           transition={{ repeat: Infinity, duration: 7, ease: "easeInOut", delay: 1 }}
-          className="absolute hidden md:block bottom-1/4 left-1/6 p-3 glassmorphism rounded-xl border border-white/5 opacity-40 hover:opacity-100 transition-opacity"
+          className="absolute hidden md:block bottom-1/4 left-1/6 p-3 glassmorphism rounded-xl border border-white/5 opacity-40 hover:opacity-100 hover:scale-110 hover:border-brand-orange-mid/40 transition-all duration-300 shadow-md"
         >
           <SiFastapi className="text-emerald-400 text-3xl" />
         </motion.div>
         <motion.div 
-          animate={{ y: [0, -18, 0], x: [0, -6, 0] }}
+          animate={{ y: [0, -18, 0], rotate: [0, -4, 0] }}
           transition={{ repeat: Infinity, duration: 8, ease: "easeInOut", delay: 2 }}
-          className="absolute hidden md:block top-1/3 right-1/10 p-3 glassmorphism rounded-xl border border-white/5 opacity-40 hover:opacity-100 transition-opacity"
+          className="absolute hidden md:block top-1/3 right-1/10 p-3 glassmorphism rounded-xl border border-white/5 opacity-40 hover:opacity-100 hover:scale-110 hover:border-brand-orange-mid/40 transition-all duration-300 shadow-md"
         >
           <FaPython className="text-yellow-500 text-3xl" />
         </motion.div>
         <motion.div 
-          animate={{ y: [0, 15, 0], x: [0, 7, 0] }}
+          animate={{ y: [0, 15, 0], rotate: [0, 8, 0] }}
           transition={{ repeat: Infinity, duration: 5, ease: "easeInOut", delay: 3 }}
-          className="absolute hidden md:block bottom-1/3 right-1/6 p-3 glassmorphism rounded-xl border border-white/5 opacity-40 hover:opacity-100 transition-opacity"
+          className="absolute hidden md:block bottom-1/3 right-1/6 p-3 glassmorphism rounded-xl border border-white/5 opacity-40 hover:opacity-100 hover:scale-110 hover:border-brand-orange-mid/40 transition-all duration-300 shadow-md"
         >
           <FaDocker className="text-sky-500 text-3xl" />
         </motion.div>
@@ -190,10 +238,8 @@ const Home = () => {
           >
             {/* Glowing Logo wrapper */}
             <div className="relative mb-8 group cursor-pointer">
-              {/* Pulsing outer aura glow */}
               <div className="absolute inset-0 rounded-3xl bg-brand-orange-mid/20 blur-xl group-hover:blur-2xl transition-all duration-300 opacity-70 group-hover:opacity-100" />
               
-              {/* Inner Badge */}
               <motion.div
                 whileHover={{ 
                   scale: 1.05, 
@@ -203,7 +249,6 @@ const Home = () => {
                 transition={{ type: "spring", stiffness: 300, damping: 15 }}
                 className="relative p-3 rounded-3xl border border-brand-orange-mid/30 bg-gradient-to-b from-neutral-900 to-neutral-950 dark:from-neutral-950 dark:to-black shadow-2xl flex items-center justify-center overflow-hidden"
               >
-                {/* Shiny reflection sweep */}
                 <div className="absolute inset-0 w-[200%] h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out" />
                 
                 <img 
@@ -214,10 +259,12 @@ const Home = () => {
               </motion.div>
             </div>
 
-            {/* Headline */}
+            {/* Headline with premium text reveal scroll effects */}
             <h1 className="font-display font-extrabold text-4xl sm:text-6xl md:text-7xl text-neutral-950 dark:text-white tracking-tight leading-[1.05] mb-6">
-              Transforming Ideas Into <br className="hidden sm:inline" />
-              <span className="gradient-text-brand text-glow-orange">Digital Innovation</span>
+              <TextReveal text="Transforming Ideas Into" /> <br className="hidden sm:inline" />
+              <span className="gradient-text-brand text-glow-orange inline-block">
+                <TextReveal text="Digital Innovation" />
+              </span>
             </h1>
 
             {/* Subheadline */}
@@ -225,20 +272,20 @@ const Home = () => {
               Veila Technologies is a technology-driven company focused on helping businesses grow through innovative digital solutions. We specialize in web development, software development, digital marketing, SEO, and social media management.
             </p>
 
-            {/* CTA Buttons */}
+            {/* Premium CTA Buttons */}
             <div className="flex flex-col sm:flex-row items-center gap-4 justify-center w-full max-w-sm sm:max-w-none">
-              <Link
+              <RippleButton
                 to="/contact"
-                className="w-full sm:w-auto px-8 py-3.5 text-sm font-semibold rounded gradient-brand hover:brightness-110 text-white shadow-lg glow-orange/20 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full sm:w-auto px-8 py-3.5 text-sm font-semibold rounded gradient-brand text-white shadow-lg glow-orange/20 flex items-center justify-center gap-2 cursor-pointer"
               >
                 Get Started <FaArrowRight size={12} />
-              </Link>
-              <Link
+              </RippleButton>
+              <RippleButton
                 to="/contact"
-                className="w-full sm:w-auto px-8 py-3.5 text-sm font-semibold rounded bg-white hover:bg-neutral-100 dark:bg-brand-dark-card dark:hover:bg-brand-dark-hover border border-black/10 dark:border-white/10 text-neutral-800 dark:text-white transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full sm:w-auto px-8 py-3.5 text-sm font-semibold rounded bg-white hover:bg-neutral-100 dark:bg-brand-dark-card dark:hover:bg-brand-dark-hover border border-black/10 dark:border-white/10 text-neutral-800 dark:text-white flex items-center justify-center gap-2 cursor-pointer"
               >
                 Contact Us
-              </Link>
+              </RippleButton>
             </div>
           </motion.div>
 
@@ -258,39 +305,45 @@ const Home = () => {
         </div>
       </section>
 
-      {/* 2. STATS SECTION */}
-      <section className="py-16 bg-neutral-50/50 dark:bg-brand-dark-card/30 border-y border-neutral-200 dark:border-brand-dark-border">
+      {/* 2. STATS SECTION (Viewport triggered scroll animation) */}
+      <motion.section 
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={staggerContainer}
+        className="py-16 bg-neutral-50/50 dark:bg-brand-dark-card/30 border-y border-neutral-200 dark:border-brand-dark-border"
+      >
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
-            <div className="flex flex-col gap-2">
+            <motion.div variants={fadeInUp} className="flex flex-col gap-2">
               <StatsCounter target={100} suffix="+" />
               <span className="text-xs sm:text-sm text-neutral-500 dark:text-brand-gray uppercase tracking-widest font-bold font-sans">
                 Projects Delivered
               </span>
-            </div>
-            <div className="flex flex-col gap-2">
+            </motion.div>
+            <motion.div variants={fadeInUp} className="flex flex-col gap-2">
               <StatsCounter target={50} suffix="+" />
               <span className="text-xs sm:text-sm text-neutral-500 dark:text-brand-gray uppercase tracking-widest font-bold font-sans">
                 Happy Clients
               </span>
-            </div>
-            <div className="flex flex-col gap-2">
+            </motion.div>
+            <motion.div variants={fadeInUp} className="flex flex-col gap-2">
               <StatsCounter target={10} suffix="+" />
               <span className="text-xs sm:text-sm text-neutral-500 dark:text-brand-gray uppercase tracking-widest font-bold font-sans">
                 Technology Experts
               </span>
-            </div>
-            <div className="flex flex-col gap-2">
+            </motion.div>
+            <motion.div variants={fadeInUp} className="flex flex-col gap-2">
               <StatsCounter target={5} suffix="+" />
               <span className="text-xs sm:text-sm text-neutral-500 dark:text-brand-gray uppercase tracking-widest font-bold font-sans">
                 Years Experience
               </span>
-            </div>
+            </motion.div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
-      {/* 3. SERVICES SECTION */}
+      {/* 3. SERVICES SECTION (Viewport stagger entries + high quality lifts) */}
       <section className="py-24 px-6 relative overflow-hidden">
         <div className="absolute w-[400px] h-[400px] rounded-full bg-brand-orange-mid/5 blur-[120px] top-1/3 -left-36 pointer-events-none" />
         <div className="max-w-7xl mx-auto">
@@ -298,21 +351,28 @@ const Home = () => {
           <div className="text-center max-w-2xl mx-auto mb-16">
             <span className="text-xs text-brand-orange-light font-sans font-bold tracking-widest uppercase">What We Offer</span>
             <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-neutral-800 dark:text-white mt-2 mb-4 leading-tight">
-              Enterprise Services Built for Scale
+              <TextReveal text="Enterprise Services Built for Scale" />
             </h2>
             <div className="w-12 h-1 bg-brand-orange-mid mx-auto rounded-full" />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {services.map((svc, i) => (
+          <motion.div 
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+            variants={staggerContainer}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          >
+            {services.map((svc) => (
               <motion.div
                 key={svc.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.05 }}
-                whileHover={{ y: -5 }}
-                className="p-6 glassmorphism rounded-xl hover:glassmorphism-hover group transition-all duration-300"
+                variants={fadeInUp}
+                whileHover={{ 
+                  y: -8,
+                  boxShadow: "0 0 25px rgba(255, 106, 0, 0.12)",
+                  borderColor: "rgba(255, 106, 0, 0.25)"
+                }}
+                className="p-6 glassmorphism rounded-xl hover:glassmorphism-hover group border border-white/5 transition-all duration-300 cursor-pointer"
               >
                 <div className="w-12 h-12 rounded bg-brand-orange-mid/10 border border-brand-orange-mid/20 flex items-center justify-center text-brand-orange-light text-xl mb-6 group-hover:scale-110 group-hover:bg-brand-orange-mid group-hover:text-white transition-all duration-300">
                   {svc.icon}
@@ -320,24 +380,24 @@ const Home = () => {
                 <h3 className="font-display font-bold text-lg text-neutral-800 dark:text-white mb-3 group-hover:text-brand-orange-light transition-colors duration-200">
                   {svc.title}
                 </h3>
-                <p className="text-sm text-neutral-800 dark:text-brand-muted leading-relaxed">
+                <p className="text-sm text-neutral-800 dark:text-brand-muted leading-relaxed font-sans">
                   {svc.desc}
                 </p>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
 
         </div>
       </section>
 
-      {/* 4. TECHNOLOGY SHOWCASE */}
+      {/* 4. TECHNOLOGY SHOWCASE (Interactive spring layout shifts) */}
       <section className="py-20 px-6 bg-brand-dark-card/10 border-y border-neutral-200 dark:border-brand-dark-border">
         <div className="max-w-5xl mx-auto">
           
           <div className="text-center mb-12">
             <span className="text-xs text-brand-orange-light font-sans font-bold tracking-widest uppercase">Our Stack</span>
             <h2 className="font-display font-extrabold text-3xl text-neutral-800 dark:text-white mt-1 mb-6">
-              Interactive Tech Showcase
+              <TextReveal text="Interactive Tech Showcase" />
             </h2>
           </div>
 
@@ -366,20 +426,21 @@ const Home = () => {
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeTechTab}
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
+                exit={{ opacity: 0, y: -15 }}
                 transition={{ duration: 0.3 }}
                 className="grid grid-cols-2 md:grid-cols-3 gap-6 w-full text-center"
               >
                 {techStack[activeTechTab].map((tech) => (
-                  <div 
+                  <motion.div 
                     key={tech.name}
-                    className="p-4 sm:p-6 rounded-xl bg-white/60 dark:bg-brand-black/40 border border-black/5 dark:border-white/5 flex flex-col items-center justify-center gap-3 hover:border-brand-orange-mid/20 transition-colors duration-200"
+                    whileHover={{ scale: 1.05, borderColor: "rgba(255, 106, 0, 0.2)", boxShadow: "0 0 15px rgba(255, 106, 0, 0.08)" }}
+                    className="p-4 sm:p-6 rounded-xl bg-white/60 dark:bg-brand-black/40 border border-black/5 dark:border-white/5 flex flex-col items-center justify-center gap-3 transition-colors duration-200"
                   >
                     <div className="text-4xl">{tech.icon}</div>
                     <span className="font-sans font-semibold text-sm text-neutral-800 dark:text-brand-gray">{tech.name}</span>
-                  </div>
+                  </motion.div>
                 ))}
               </motion.div>
             </AnimatePresence>
@@ -388,28 +449,35 @@ const Home = () => {
         </div>
       </section>
 
-      {/* 5. WHY CHOOSE VEILA */}
+      {/* 5. WHY CHOOSE VEILA (Scale-in stagger viewport entry) */}
       <section className="py-24 px-6">
         <div className="max-w-7xl mx-auto">
           
           <div className="text-center max-w-2xl mx-auto mb-16">
             <span className="text-xs text-brand-orange-light font-sans font-bold tracking-widest uppercase">Why Choose Us</span>
             <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-neutral-800 dark:text-white mt-2 mb-4">
-              Building Scalable & Secure Standards
+              <TextReveal text="Building Scalable & Secure Standards" />
             </h2>
             <div className="w-12 h-1 bg-brand-orange-mid mx-auto rounded-full" />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {whyChooseUs.map((item, i) => (
+          <motion.div 
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+            variants={staggerContainer}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          >
+            {whyChooseUs.map((item) => (
               <motion.div
                 key={item.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.05 }}
-                whileHover={{ y: -5 }}
-                className="flex gap-4 p-6 rounded-xl glassmorphism hover:glassmorphism-hover hover:border-brand-orange-mid/20 transition-all duration-300"
+                variants={fadeInUp}
+                whileHover={{ 
+                  y: -6,
+                  boxShadow: "0 0 25px rgba(255, 106, 0, 0.1)",
+                  borderColor: "rgba(255, 106, 0, 0.25)"
+                }}
+                className="flex gap-4 p-6 rounded-xl glassmorphism border border-white/5 hover:glassmorphism-hover transition-all duration-300"
               >
                 <div className="text-brand-orange-light mt-1 shrink-0">
                   <FaCheckCircle size={18} />
@@ -418,18 +486,18 @@ const Home = () => {
                   <h3 className="font-display font-bold text-md text-neutral-800 dark:text-white mb-2">
                     {item.title}
                   </h3>
-                  <p className="text-sm text-neutral-800 dark:text-brand-muted leading-relaxed">
+                  <p className="text-sm text-neutral-800 dark:text-brand-muted leading-relaxed font-sans">
                     {item.desc}
                   </p>
                 </div>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
 
         </div>
       </section>
 
-      {/* 6. FEATURED PROJECTS SECTION (API DRIVEN) */}
+      {/* 6. FEATURED PROJECTS SECTION (Scale reveals on load) */}
       <section className="py-20 px-6 bg-neutral-50/40 dark:bg-brand-dark-card/30 border-y border-neutral-200 dark:border-brand-dark-border relative overflow-hidden">
         <div className="absolute w-[500px] h-[500px] rounded-full bg-brand-orange-mid/5 blur-[120px] bottom-0 right-0 pointer-events-none" />
         <div className="max-w-7xl mx-auto">
@@ -438,7 +506,7 @@ const Home = () => {
             <div>
               <span className="text-xs text-brand-orange-light font-sans font-bold tracking-widest uppercase">Our Work</span>
               <h2 className="font-display font-extrabold text-3xl sm:text-4xl text-neutral-800 dark:text-white mt-2">
-                Featured Deliveries
+                <TextReveal text="Featured Deliveries" />
               </h2>
             </div>
             <Link
@@ -463,13 +531,25 @@ const Home = () => {
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <motion.div 
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true }}
+              variants={staggerContainer}
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
+            >
               {projects.map((proj) => (
                 <motion.div
                   key={proj.id}
-                  whileHover={{ y: -6 }}
+                  layoutId={`project-container-${proj.id}`}
+                  variants={fadeInUp}
+                  whileHover={{ 
+                    y: -8,
+                    boxShadow: "0 0 30px rgba(255, 106, 0, 0.15)",
+                    borderColor: "rgba(255, 106, 0, 0.25)"
+                  }}
                   onClick={() => setSelectedProject(proj)}
-                  className="glassmorphism rounded-xl border border-white/5 overflow-hidden flex flex-col h-full hover:border-brand-orange-mid/20 transition-all duration-300 cursor-pointer select-none"
+                  className="glassmorphism rounded-xl border border-white/5 overflow-hidden flex flex-col h-full transition-all duration-300 cursor-pointer select-none"
                 >
                   <div className="relative h-48 overflow-hidden bg-brand-dark-border select-none">
                     <img 
@@ -482,10 +562,10 @@ const Home = () => {
                   </div>
 
                   <div className="p-6 flex flex-col flex-grow select-text">
-                    <h3 className="font-display font-bold text-lg text-neutral-800 dark:text-white mb-2 hover:text-brand-orange-light transition-colors">
+                    <h3 className="font-display font-bold text-lg text-neutral-800 dark:text-white mb-2">
                       {proj.title}
                     </h3>
-                    <p className="text-sm text-neutral-800 dark:text-brand-muted line-clamp-3 leading-relaxed mb-4">
+                    <p className="text-sm text-neutral-800 dark:text-brand-muted line-clamp-3 leading-relaxed mb-4 font-sans">
                       {proj.description}
                     </p>
                     
@@ -529,21 +609,19 @@ const Home = () => {
                   </div>
                 </motion.div>
               ))}
-            </div>
+            </motion.div>
           )}
 
         </div>
       </section>
 
-      {/* Project Details Modal */}
+      {/* Project Details Modal - Morphing morph transition click handler */}
       <AnimatePresence>
         {selectedProject && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm select-none">
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 15 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 15 }}
-              transition={{ duration: 0.3 }}
+              layoutId={`project-container-${selectedProject.id}`}
+              transition={{ type: "spring", stiffness: 220, damping: 28 }}
               className="w-full max-w-2xl bg-white dark:bg-brand-dark-card border border-black/10 dark:border-white/10 rounded-2xl overflow-hidden shadow-2xl p-6 md:p-8 flex flex-col max-h-[90vh] relative select-text"
             >
               {/* Close Button */}
@@ -595,24 +673,20 @@ const Home = () => {
                 {/* Actions */}
                 <div className="flex flex-col sm:flex-row gap-4 mt-2">
                   {selectedProject.live_url && (
-                    <a
-                      href={getProjectLink(selectedProject.live_url)}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="flex-1 px-6 py-3 rounded text-sm font-semibold text-center gradient-brand hover:brightness-110 text-white shadow-lg glow-orange/20 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
+                    <RippleButton
+                      to={getProjectLink(selectedProject.live_url)}
+                      className="flex-1 px-6 py-3 rounded text-sm font-semibold text-center gradient-brand hover:brightness-110 text-white shadow-lg glow-orange/20 flex items-center justify-center gap-2 cursor-pointer"
                     >
                       Launch Live Demo <FaExternalLinkAlt size={12} />
-                    </a>
+                    </RippleButton>
                   )}
                   {selectedProject.github_url && (
-                    <a
-                      href={getProjectLink(selectedProject.github_url)}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="flex-1 px-6 py-3 rounded text-sm font-semibold text-center bg-white hover:bg-neutral-100 dark:bg-brand-dark-card/80 dark:hover:bg-brand-dark-hover border border-black/10 dark:border-white/10 text-neutral-800 dark:text-white transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
+                    <RippleButton
+                      to={getProjectLink(selectedProject.github_url)}
+                      className="flex-1 px-6 py-3 rounded text-sm font-semibold text-center bg-white hover:bg-neutral-100 dark:bg-brand-dark-card/80 dark:hover:bg-brand-dark-hover border border-black/10 dark:border-white/10 text-neutral-800 dark:text-white flex items-center justify-center gap-2 cursor-pointer"
                     >
                       Explore Codebase <FaGithub size={14} />
-                    </a>
+                    </RippleButton>
                   )}
                 </div>
               </div>
@@ -629,11 +703,17 @@ const Home = () => {
           <div className="text-center mb-16">
             <span className="text-xs text-brand-orange-light font-sans font-bold tracking-widest uppercase">Client Feedback</span>
             <h2 className="font-display font-extrabold text-3xl text-neutral-800 dark:text-white mt-1 mb-2">
-              What Partners Say
+              <TextReveal text="What Partners Say" />
             </h2>
           </div>
 
-          <div className="glassmorphism rounded-2xl p-8 md:p-12 border border-white/5 relative">
+          <motion.div 
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+            variants={scaleIn}
+            className="glassmorphism rounded-2xl p-8 md:p-12 border border-white/5 relative"
+          >
             
             {/* Quote icon overlay */}
             <div className="absolute top-6 left-6 text-brand-orange-mid/10 text-7xl pointer-events-none">
@@ -643,10 +723,10 @@ const Home = () => {
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentTestimonial}
-                initial={{ opacity: 0, x: 20 }}
+                initial={{ opacity: 0, x: 30 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.4 }}
+                exit={{ opacity: 0, x: -30 }}
+                transition={{ duration: 0.35, ease: "easeOut" }}
                 className="flex flex-col items-center text-center gap-6"
               >
                 {/* Stars */}
@@ -691,16 +771,19 @@ const Home = () => {
               </button>
             </div>
 
-          </div>
+          </motion.div>
 
         </div>
       </section>
 
-      {/* 8. CALL TO ACTION (CTA) */}
+      {/* 8. CALL TO ACTION */}
       <section className="py-20 px-6">
         <div className="max-w-5xl mx-auto">
           <motion.div
-            whileHover={{ scale: 1.01 }}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+            variants={scaleIn}
             className="glassmorphism rounded-2xl p-8 md:p-14 text-center border border-white/5 relative overflow-hidden flex flex-col items-center shadow-2xl"
           >
             {/* Soft glowing overlays */}
@@ -708,18 +791,18 @@ const Home = () => {
             <div className="absolute w-[300px] h-[300px] rounded-full bg-brand-orange-light/5 blur-[80px] -top-1/2 -left-1/4 pointer-events-none" />
 
             <h2 className="font-display font-extrabold text-3xl sm:text-5xl text-neutral-800 dark:text-white tracking-tight leading-none mb-4">
-              Ready to Upgrade Your Architecture?
+              <TextReveal text="Ready to Upgrade Your Architecture?" />
             </h2>
             <p className="max-w-lg text-sm sm:text-base text-neutral-800 dark:text-brand-gray font-sans mb-8">
               Let's build a fast, secure, and modern digital solution that solves your operations and captures your audience.
             </p>
             
-            <Link
+            <RippleButton
               to="/contact"
-              className="px-8 py-3.5 rounded text-sm font-bold uppercase tracking-wider gradient-brand hover:brightness-110 text-white shadow-lg glow-orange/20 transition-all duration-300 cursor-pointer"
+              className="px-8 py-3.5 rounded text-sm font-bold uppercase tracking-wider gradient-brand text-white shadow-lg glow-orange/20 cursor-pointer"
             >
               Launch Project
-            </Link>
+            </RippleButton>
           </motion.div>
         </div>
       </section>

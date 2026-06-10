@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FaLock, FaUser, FaChartBar, FaBriefcase, FaFolder, FaEnvelope, FaSignOutAlt, 
-  FaPlus, FaEdit, FaTrash, FaDownload, FaEye, FaTimes, FaGlobe, FaGithub 
+  FaPlus, FaEdit, FaTrash, FaDownload, FaTimes, FaGlobe, FaGithub 
 } from 'react-icons/fa';
 import axios from 'axios';
 
@@ -47,12 +47,10 @@ const Admin = () => {
     headers: { Authorization: `Bearer ${token}` }
   };
 
-  // Fetch metrics when token changes
-  useEffect(() => {
-    if (token) {
-      fetchDashboardData();
-    }
-  }, [token]);
+  const handleLogout = () => {
+    localStorage.removeItem('veila_admin_token');
+    setToken("");
+  };
 
   const fetchDashboardData = async () => {
     setLoadingStats(true);
@@ -86,6 +84,15 @@ const Admin = () => {
     }
   };
 
+  // Fetch metrics when token changes
+  useEffect(() => {
+    if (token) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      fetchDashboardData();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token]);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoginError("");
@@ -111,11 +118,6 @@ const Admin = () => {
     } finally {
       setLoginLoading(false);
     }
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem('veila_admin_token');
-    setToken("");
   };
 
   // CRUD actions for Projects
@@ -161,6 +163,7 @@ const Admin = () => {
       setProjectModal(false);
       fetchDashboardData();
     } catch (err) {
+      console.error(err);
       alert("Failed to save project. Verify your login status.");
     }
   };
@@ -171,6 +174,7 @@ const Admin = () => {
       await axios.delete(`${API_BASE}/projects/${id}`, axiosConfig);
       fetchDashboardData();
     } catch (err) {
+      console.error(err);
       alert("Failed to delete project.");
     }
   };
@@ -215,6 +219,7 @@ const Admin = () => {
       setJobModal(false);
       fetchDashboardData();
     } catch (err) {
+      console.error(err);
       alert("Failed to save job position.");
     }
   };
@@ -225,6 +230,7 @@ const Admin = () => {
       await axios.delete(`${API_BASE}/jobs/${id}`, axiosConfig);
       fetchDashboardData();
     } catch (err) {
+      console.error(err);
       alert("Failed to delete job.");
     }
   };

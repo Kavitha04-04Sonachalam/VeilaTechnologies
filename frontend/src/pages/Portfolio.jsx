@@ -1,7 +1,34 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaGithub, FaExternalLinkAlt, FaFolderOpen, FaTimes } from 'react-icons/fa';
 import axios from 'axios';
+import RippleButton from '../components/Button/RippleButton';
+
+// Word-by-word text reveal scroll effect
+const TextReveal = ({ text, className = "" }) => {
+  const words = text.split(" ");
+  return (
+    <span className={`inline-flex flex-wrap ${className}`}>
+      {words.map((word, index) => (
+        <span key={index} className="overflow-hidden inline-block mr-[0.25em]">
+          <motion.span
+            initial={{ y: "100%", opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ 
+              duration: 0.6, 
+              delay: index * 0.05, 
+              ease: [0.16, 1, 0.3, 1] 
+            }}
+            className="inline-block"
+          >
+            {word}
+          </motion.span>
+        </span>
+      ))}
+    </span>
+  );
+};
 
 const Portfolio = () => {
   const [projects, setProjects] = useState([]);
@@ -67,6 +94,22 @@ const Portfolio = () => {
     ? projects
     : projects.filter((p) => p.tech_stack.toLowerCase().includes(selectedTag.toLowerCase()));
 
+  // Animation variants
+  const staggerContainer = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.08
+      }
+    }
+  };
+
+  const cardFadeIn = {
+    hidden: { opacity: 0, scale: 0.95, y: 20 },
+    show: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" } }
+  };
+
   return (
     <div className="pt-24 min-h-screen">
       
@@ -75,7 +118,7 @@ const Portfolio = () => {
         <div className="max-w-3xl mx-auto">
           <span className="text-xs text-brand-orange-light font-sans font-bold tracking-widest uppercase">Showcase</span>
           <h1 className="font-display font-extrabold text-4xl sm:text-5xl text-neutral-800 dark:text-white mt-2 mb-6">
-            Featured Projects & Portfolio
+            <TextReveal text="Featured Projects & Portfolio" />
           </h1>
           <p className="text-sm sm:text-base text-neutral-800 dark:text-brand-gray leading-relaxed font-sans max-w-xl mx-auto">
             Review our portfolio of recent project completions, backend microservices, and interactive frontend dashboards.
@@ -124,23 +167,31 @@ const Portfolio = () => {
             <div className="text-center py-16 glassmorphism rounded-2xl border border-white/5 p-8">
               <div className="text-brand-muted text-5xl mb-4 flex justify-center"><FaFolderOpen /></div>
               <h3 className="font-display font-bold text-lg text-neutral-800 dark:text-white">No projects found</h3>
-
-              <p className="text-sm text-brand-muted mt-2">No projects matching tech tag "{selectedTag}" are registered.</p>
+              <p className="text-sm text-brand-muted mt-2 font-sans">No projects matching tech tag "{selectedTag}" are registered.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <motion.div 
+              layout
+              variants={staggerContainer}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true }}
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
+            >
               <AnimatePresence mode="popLayout">
                 {filteredProjects.map((proj) => (
                   <motion.div
-                    layout
+                    layoutId={`project-portfolio-${proj.id}`}
                     key={proj.id}
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
+                    variants={cardFadeIn}
                     exit={{ opacity: 0, scale: 0.95 }}
-                    transition={{ duration: 0.3 }}
-                    whileHover={{ y: -6 }}
+                    whileHover={{ 
+                      y: -8,
+                      boxShadow: "0 0 25px rgba(255, 106, 0, 0.15)",
+                      borderColor: "rgba(255, 106, 0, 0.25)"
+                    }}
                     onClick={() => setSelectedProject(proj)}
-                    className="glassmorphism rounded-xl border border-white/5 overflow-hidden flex flex-col h-full hover:border-brand-orange-mid/20 transition-all duration-300 cursor-pointer select-none"
+                    className="glassmorphism rounded-xl border border-white/5 overflow-hidden flex flex-col h-full transition-all duration-300 cursor-pointer select-none"
                   >
                     <div className="relative h-48 overflow-hidden bg-brand-dark-border select-none">
                       <img 
@@ -155,7 +206,7 @@ const Portfolio = () => {
                       <h3 className="font-display font-bold text-lg text-neutral-800 dark:text-white mb-2">
                         {proj.title}
                       </h3>
-                      <p className="text-sm text-neutral-800 dark:text-brand-muted line-clamp-4 leading-relaxed mb-5">
+                      <p className="text-sm text-neutral-800 dark:text-brand-muted line-clamp-4 leading-relaxed mb-5 font-sans">
                         {proj.description}
                       </p>
                       
@@ -200,20 +251,18 @@ const Portfolio = () => {
                   </motion.div>
                 ))}
               </AnimatePresence>
-            </div>
+            </motion.div>
           )}
         </div>
       </section>
 
-      {/* Project Details Modal */}
+      {/* Project Details Modal - Shared Morph Layout */}
       <AnimatePresence>
         {selectedProject && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm select-none">
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 15 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 15 }}
-              transition={{ duration: 0.3 }}
+              layoutId={`project-portfolio-${selectedProject.id}`}
+              transition={{ type: "spring", stiffness: 220, damping: 28 }}
               className="w-full max-w-2xl bg-white dark:bg-brand-dark-card border border-black/10 dark:border-white/10 rounded-2xl overflow-hidden shadow-2xl p-6 md:p-8 flex flex-col max-h-[90vh] relative select-text"
             >
               {/* Close Button */}
@@ -265,24 +314,20 @@ const Portfolio = () => {
                 {/* Actions */}
                 <div className="flex flex-col sm:flex-row gap-4 mt-2">
                   {selectedProject.live_url && (
-                    <a
-                      href={getProjectLink(selectedProject.live_url)}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="flex-1 px-6 py-3 rounded text-sm font-semibold text-center gradient-brand hover:brightness-110 text-white shadow-lg glow-orange/20 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
+                    <RippleButton
+                      to={getProjectLink(selectedProject.live_url)}
+                      className="flex-1 px-6 py-3 rounded text-sm font-semibold text-center gradient-brand text-white shadow-lg glow-orange/20 flex items-center justify-center gap-2 cursor-pointer"
                     >
                       Launch Live Demo <FaExternalLinkAlt size={12} />
-                    </a>
+                    </RippleButton>
                   )}
                   {selectedProject.github_url && (
-                    <a
-                      href={getProjectLink(selectedProject.github_url)}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="flex-1 px-6 py-3 rounded text-sm font-semibold text-center bg-white hover:bg-neutral-100 dark:bg-brand-dark-card/80 dark:hover:bg-brand-dark-hover border border-black/10 dark:border-white/10 text-neutral-800 dark:text-white transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
+                    <RippleButton
+                      to={getProjectLink(selectedProject.github_url)}
+                      className="flex-1 px-6 py-3 rounded text-sm font-semibold text-center bg-white hover:bg-neutral-100 dark:bg-brand-dark-card/80 dark:hover:bg-brand-dark-hover border border-black/10 dark:border-white/10 text-neutral-800 dark:text-white flex items-center justify-center gap-2 cursor-pointer"
                     >
                       Explore Codebase <FaGithub size={14} />
-                    </a>
+                    </RippleButton>
                   )}
                 </div>
               </div>

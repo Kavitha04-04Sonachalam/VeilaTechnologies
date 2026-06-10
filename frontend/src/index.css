@@ -164,3 +164,72 @@ body {
   transform-origin: 0%;
   z-index: 100;
 }
+
+/* 3D Flip Card Utilities */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+/* Animated Gradient Borders & Backgrounds */
+@keyframes rotateGradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-gradient-border {
+  background-size: 200% 200%;
+  animation: rotateGradient 4s linear infinite;
+}
+
+/* Glassmorphism custom pricing cards */
+.pricing-card-highlight {
+  position: relative;
+  background: rgba(20, 20, 20, 0.8);
+  border: 1px solid rgba(255, 106, 0, 0.3);
+}
+
+.dark .pricing-card-highlight {
+  background: rgba(10, 10, 10, 0.85);
+  border: 1px solid rgba(255, 106, 0, 0.4);
+}
+
+/* Ripple click animations */
+.ripple-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.ripple-circle {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  transform: scale(0);
+  pointer-events: none;
+}
+

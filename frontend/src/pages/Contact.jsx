@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaEnvelope, FaPhone, FaMapMarkerAlt, FaCheckCircle, FaYoutube, FaInstagram } from 'react-icons/fa';
+import { FaEnvelope, FaPhone, FaMapMarkerAlt, FaYoutube, FaInstagram } from 'react-icons/fa';
 import axios from 'axios';
+import RippleButton from '../components/Button/RippleButton';
 
 const Contact = () => {
   const [name, setName] = useState("");
@@ -12,6 +13,18 @@ const Contact = () => {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
+  
+  // Toast notifications states
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+
+  const triggerToast = (msg) => {
+    setToastMessage(msg);
+    setShowToast(true);
+    setTimeout(() => {
+      setShowToast(false);
+    }, 4000);
+  };
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -21,7 +34,7 @@ const Contact = () => {
 
     let cleanPhone = null;
     if (phone.trim() !== "") {
-      cleanPhone = phone.replace(/[\s\-\(\)]/g, "");
+      cleanPhone = phone.replace(/[\s()-]/g, "");
       const phoneRegex = /^\+?[1-9]\d{6,14}$/;
       if (!phoneRegex.test(cleanPhone)) {
         setError("Invalid phone number format. Must be 7 to 15 digits, optionally starting with '+'");
@@ -43,6 +56,7 @@ const Contact = () => {
         }
       });
       setSuccess(true);
+      triggerToast("Message transmitted successfully!");
       // Clean inputs
       setName("");
       setEmail("");
@@ -62,6 +76,7 @@ const Contact = () => {
         }
       }
       setError(errorMsg);
+      triggerToast("Failed to transmit message.");
     } finally {
       setSubmitting(false);
     }
@@ -101,37 +116,46 @@ const Contact = () => {
               
               <div className="flex flex-col gap-5 mt-4">
                 {/* Location */}
-                <div className="flex items-start gap-4">
+                <motion.div 
+                  whileHover={{ x: 5 }}
+                  className="flex items-start gap-4 cursor-pointer"
+                >
                   <div className="text-brand-orange-light mt-1 shrink-0"><FaMapMarkerAlt size={16} /></div>
                   <div>
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-800 dark:text-white mb-1">Location</h4>
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-800 dark:text-white mb-1 font-display">Location</h4>
                     <p className="text-xs text-neutral-800 dark:text-brand-gray font-sans">
                       Virudhunagar, Tamilnadu, India
                     </p>
                   </div>
-                </div>
+                </motion.div>
 
                 {/* Email */}
-                <div className="flex items-start gap-4">
+                <motion.div 
+                  whileHover={{ x: 5 }}
+                  className="flex items-start gap-4 cursor-pointer"
+                >
                   <div className="text-brand-orange-light mt-1 shrink-0"><FaEnvelope size={16} /></div>
                   <div>
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-800 dark:text-white mb-1">Email</h4>
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-800 dark:text-white mb-1 font-display">Email</h4>
                     <p className="text-xs text-neutral-800 dark:text-brand-gray font-sans">
                       veilatechnologies@gmail.com
                     </p>
                   </div>
-                </div>
+                </motion.div>
 
                 {/* Phone */}
-                <div className="flex items-start gap-4">
+                <motion.div 
+                  whileHover={{ x: 5 }}
+                  className="flex items-start gap-4 cursor-pointer"
+                >
                   <div className="text-brand-orange-light mt-1 shrink-0"><FaPhone size={16} /></div>
                   <div>
-                    <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-800 dark:text-white mb-1">Phone</h4>
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-800 dark:text-white mb-1 font-display">Phone</h4>
                     <p className="text-xs text-neutral-800 dark:text-brand-gray font-sans">
                       +91 8072196400
                     </p>
                   </div>
-                </div>
+                </motion.div>
               </div>
             </div>
 
@@ -139,54 +163,83 @@ const Contact = () => {
             <div>
               <h4 className="text-xs font-bold uppercase tracking-widest text-neutral-800 dark:text-white mb-4">Connect Socially</h4>
               <div className="flex gap-4">
-                <a 
+                <motion.a 
                   href="https://www.instagram.com/veilatechnologies?igsh=MjhvN3VoMTRlYTl1" 
                   target="_blank" 
                   rel="noreferrer" 
-                  className="w-11 h-11 rounded-full flex items-center justify-center bg-neutral-100 hover:bg-brand-orange-mid dark:bg-brand-dark-card dark:hover:bg-brand-orange-mid border border-black/5 dark:border-white/5 text-neutral-700 hover:text-white dark:text-brand-gray dark:hover:text-white transition-all duration-300 shadow-xs hover:shadow-md hover:-translate-y-0.5 cursor-pointer"
+                  whileHover={{ y: -4, scale: 1.05, backgroundColor: "#FF4D00", color: "#FFFFFF", borderColor: "#FF4D00" }}
+                  whileTap={{ scale: 0.95 }}
+                  className="w-11 h-11 rounded-full flex items-center justify-center bg-neutral-100 dark:bg-brand-dark-card border border-black/5 dark:border-white/5 text-neutral-700 dark:text-brand-gray transition-all duration-200 shadow-xs cursor-pointer"
                 >
                   <FaInstagram size={18} />
-                </a>
-                <a 
+                </motion.a>
+                <motion.a 
                   href="https://www.youtube.com/@VeilaTechnologies" 
                   target="_blank" 
                   rel="noreferrer" 
-                  className="w-11 h-11 rounded-full flex items-center justify-center bg-neutral-100 hover:bg-brand-orange-mid dark:bg-brand-dark-card dark:hover:bg-brand-orange-mid border border-black/5 dark:border-white/5 text-neutral-700 hover:text-white dark:text-brand-gray dark:hover:text-white transition-all duration-300 shadow-xs hover:shadow-md hover:-translate-y-0.5 cursor-pointer"
+                  whileHover={{ y: -4, scale: 1.05, backgroundColor: "#FF4D00", color: "#FFFFFF", borderColor: "#FF4D00" }}
+                  whileTap={{ scale: 0.95 }}
+                  className="w-11 h-11 rounded-full flex items-center justify-center bg-neutral-100 dark:bg-brand-dark-card border border-black/5 dark:border-white/5 text-neutral-700 dark:text-brand-gray transition-all duration-200 shadow-xs cursor-pointer"
                 >
                   <FaYoutube size={18} />
-                </a>
+                </motion.a>
               </div>
             </div>
-
-
           </div>
 
           {/* Right Column: Contact Form */}
           <div className="lg:col-span-7">
-            <div className="p-8 glassmorphism rounded-2xl border border-white/5 relative">
+            <div className="p-8 glassmorphism rounded-2xl border border-white/5 relative min-h-[460px] flex flex-col justify-center">
               <div className="absolute w-64 h-64 rounded-full bg-brand-orange-mid/5 blur-3xl bottom-6 right-6 pointer-events-none" />
               
               <AnimatePresence mode="wait">
                 {success ? (
                   <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
+                    initial={{ opacity: 0, scale: 0.92 }}
                     animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.92 }}
                     className="flex flex-col items-center justify-center text-center py-12 gap-4"
                   >
-                    <div className="text-brand-orange-light text-5xl animate-bounce"><FaCheckCircle /></div>
-                    <h3 className="font-display font-bold text-xl text-white">Message Transmitted!</h3>
-                    <p className="text-sm text-brand-muted max-w-sm">
+                    {/* Re-designed vector drawn SVG checkmark */}
+                    <svg className="w-20 h-20 text-brand-orange-light mb-4" viewBox="0 0 52 52">
+                      <motion.circle
+                        cx="26"
+                        cy="26"
+                        r="24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="3.5"
+                        initial={{ pathLength: 0 }}
+                        animate={{ pathLength: 1 }}
+                        transition={{ duration: 0.6, ease: "easeOut" }}
+                      />
+                      <motion.path
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="3.5"
+                        strokeLinecap="round"
+                        d="M15 27.5l7.5 7.5 15-15"
+                        initial={{ pathLength: 0 }}
+                        animate={{ pathLength: 1 }}
+                        transition={{ duration: 0.4, delay: 0.5, ease: "easeOut" }}
+                      />
+                    </svg>
+
+                    <h3 className="font-display font-extrabold text-2xl text-neutral-800 dark:text-white">
+                      Message Transmitted!
+                    </h3>
+                    <p className="text-sm text-neutral-600 dark:text-brand-muted max-w-sm leading-relaxed font-sans">
                       Thank you for contacting Veila Technologies. We have logged your request and our lead engineering architect will follow up via email within 24 hours.
                     </p>
-                    <button
+                    <RippleButton
                       onClick={() => setSuccess(false)}
                       className="mt-6 px-6 py-2.5 text-xs font-semibold rounded gradient-brand text-white cursor-pointer"
                     >
                       Send New Message
-                    </button>
+                    </RippleButton>
                   </motion.div>
                 ) : (
-                  <form action="https://formspree.io/f/xlgknzbv" method="POST" onSubmit={handleFormSubmit} className="flex flex-col gap-5 relative z-10">
+                  <form action="https://formspree.io/f/xlgknzbv" method="POST" onSubmit={handleFormSubmit} className="flex flex-col gap-5 relative z-10 select-text">
                     
                     {error && (
                       <div className="p-3 text-xs bg-red-950/40 border border-red-500/30 text-red-300 rounded font-medium">
@@ -197,26 +250,26 @@ const Contact = () => {
                     {/* Name & Email */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="flex flex-col gap-1.5">
-                        <label className="text-xs text-brand-muted font-semibold">Your Name *</label>
+                        <label className="text-xs text-neutral-700 dark:text-brand-muted font-semibold">Your Name *</label>
                         <input
                           type="text"
                           name="name"
                           required
                           value={name}
                           onChange={(e) => setName(e.target.value)}
-                          className="w-full px-4 py-2.5 text-sm bg-white dark:bg-brand-black border border-neutral-300 dark:border-white/5 rounded focus:border-brand-orange-mid focus:outline-none text-neutral-800 dark:text-white"
+                          className="w-full px-4 py-2.5 text-sm bg-white dark:bg-brand-black border border-neutral-300 dark:border-white/5 rounded focus:border-brand-orange-mid focus:outline-none text-neutral-800 dark:text-white transition-colors"
                           placeholder="Your Name"
                         />
                       </div>
                       <div className="flex flex-col gap-1.5">
-                        <label className="text-xs text-brand-muted font-semibold">Your Email *</label>
+                        <label className="text-xs text-neutral-700 dark:text-brand-muted font-semibold">Your Email *</label>
                         <input
                           type="email"
                           name="email"
                           required
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
-                          className="w-full px-4 py-2.5 text-sm bg-white dark:bg-brand-black border border-neutral-300 dark:border-white/5 rounded focus:border-brand-orange-mid focus:outline-none text-neutral-800 dark:text-white"
+                          className="w-full px-4 py-2.5 text-sm bg-white dark:bg-brand-black border border-neutral-300 dark:border-white/5 rounded focus:border-brand-orange-mid focus:outline-none text-neutral-800 dark:text-white transition-colors"
                           placeholder="Your Email"
                         />
                       </div>
@@ -225,23 +278,23 @@ const Contact = () => {
                     {/* Phone & Service */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="flex flex-col gap-1.5">
-                        <label className="text-xs text-brand-muted font-semibold">Phone Number</label>
+                        <label className="text-xs text-neutral-700 dark:text-brand-muted font-semibold">Phone Number</label>
                         <input
                           type="text"
                           name="phone"
                           value={phone}
                           onChange={(e) => setPhone(e.target.value)}
-                          className="w-full px-4 py-2.5 text-sm bg-white dark:bg-brand-black border border-neutral-300 dark:border-white/5 rounded focus:border-brand-orange-mid focus:outline-none text-neutral-800 dark:text-white"
+                          className="w-full px-4 py-2.5 text-sm bg-white dark:bg-brand-black border border-neutral-300 dark:border-white/5 rounded focus:border-brand-orange-mid focus:outline-none text-neutral-800 dark:text-white transition-colors"
                           placeholder="Your Phone Number"
                         />
                       </div>
                       <div className="flex flex-col gap-1.5">
-                        <label className="text-xs text-brand-muted font-semibold">Select a Service</label>
+                        <label className="text-xs text-neutral-700 dark:text-brand-muted font-semibold">Select a Service</label>
                         <select
                           name="service"
                           value={service}
                           onChange={(e) => setService(e.target.value)}
-                          className="w-full px-4 py-2.5 text-sm bg-white dark:bg-brand-black border border-neutral-300 dark:border-white/5 rounded focus:border-brand-orange-mid focus:outline-none text-neutral-800 dark:text-white"
+                          className="w-full px-4 py-2.5 text-sm bg-white dark:bg-brand-black border border-neutral-300 dark:border-white/5 rounded focus:border-brand-orange-mid focus:outline-none text-neutral-800 dark:text-white transition-colors cursor-pointer"
                         >
                           <option value="">Select a Service</option>
                           <option value="Web Development">Web Development</option>
@@ -255,36 +308,52 @@ const Contact = () => {
 
                     {/* Message */}
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-xs text-brand-muted font-semibold">Your Message *</label>
+                      <label className="text-xs text-neutral-700 dark:text-brand-muted font-semibold">Your Message *</label>
                       <textarea
                         name="message"
                         required
                         rows={5}
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
-                        className="w-full px-4 py-2.5 text-sm bg-white dark:bg-brand-black border border-neutral-300 dark:border-white/5 rounded focus:border-brand-orange-mid focus:outline-none text-neutral-800 dark:text-white resize-none"
+                        className="w-full px-4 py-2.5 text-sm bg-white dark:bg-brand-black border border-neutral-300 dark:border-white/5 rounded focus:border-brand-orange-mid focus:outline-none text-neutral-800 dark:text-white resize-none transition-colors"
                         placeholder="Your Message"
                       />
                     </div>
 
                     {/* Submit Button */}
-                    <button
+                    <RippleButton
                       type="submit"
                       disabled={submitting}
-                      className="w-full mt-2 py-3 rounded text-sm font-semibold gradient-brand hover:brightness-110 text-white cursor-pointer disabled:opacity-50 transition-all duration-200"
+                      className="w-full mt-2 py-3 rounded text-sm font-semibold gradient-brand text-white shadow-lg shadow-brand-orange-mid/10"
                     >
                       {submitting ? "Transmitting..." : "Send Message"}
-                    </button>
+                    </RippleButton>
 
                   </form>
                 )}
               </AnimatePresence>
-
             </div>
           </div>
-
         </div>
       </section>
+
+      {/* Reusable Toast overlay */}
+      <AnimatePresence>
+        {showToast && (
+          <motion.div
+            initial={{ opacity: 0, y: 50, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.9 }}
+            className="fixed bottom-6 right-6 z-50 bg-neutral-900 dark:bg-neutral-950 border border-brand-orange-mid/30 text-white px-5 py-3.5 rounded-xl shadow-2xl flex items-center gap-3 font-sans text-xs"
+          >
+            <div className="w-5 h-5 rounded-full bg-brand-orange-mid flex items-center justify-center text-white text-[10px] font-bold">✓</div>
+            <div>
+              <h5 className="font-bold text-white uppercase tracking-wider mb-0.5 font-display">Message Status</h5>
+              <p className="text-neutral-400">{toastMessage}</p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
     </div>
   );

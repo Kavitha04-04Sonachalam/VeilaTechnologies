@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { FaBars, FaTimes, FaSun, FaMoon } from 'react-icons/fa';
 import { useTheme } from '../../context/ThemeContext';
@@ -24,6 +24,7 @@ const Navbar = () => {
 
   // Close mobile menu when location changes
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsOpen(false);
   }, [location]);
 
@@ -80,16 +81,20 @@ const Navbar = () => {
               }
             >
               {({ isActive }) => (
-                <>
+                <motion.span
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="relative block"
+                >
                   {link.name}
                   {isActive && (
                     <motion.div
                       layoutId="activeNavIndicator"
-                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand-orange-mid rounded-full"
+                      className="absolute bottom-[-2px] left-0 right-0 h-0.5 bg-brand-orange-mid rounded-full"
                       transition={{ type: "spring", stiffness: 380, damping: 30 }}
                     />
                   )}
-                </>
+                </motion.span>
               )}
             </NavLink>
           ))}

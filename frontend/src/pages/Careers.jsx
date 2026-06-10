@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaMapMarkerAlt, FaBriefcase, FaClock, FaPaperclip, FaTimes, FaCheckCircle, FaBriefcaseMedical } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaBriefcase, FaClock, FaPaperclip, FaTimes, FaCheckCircle, FaBriefcaseMedical, FaFileAlt } from 'react-icons/fa';
 import axios from 'axios';
+import RippleButton from '../components/Button/RippleButton';
 
 const Careers = () => {
   const [jobs, setJobs] = useState([]);
@@ -20,6 +21,22 @@ const Careers = () => {
   const [submitting, setSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState("");
+
+  // Resume uploading states
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+
+  // Toast notification states
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+
+  const triggerToast = (msg) => {
+    setToastMessage(msg);
+    setShowToast(true);
+    setTimeout(() => {
+      setShowToast(false);
+    }, 4000);
+  };
 
   useEffect(() => {
     const fetchJobs = async () => {
@@ -70,16 +87,48 @@ const Careers = () => {
     setPhone("");
     setCoverLetter("");
     setResumeFile(null);
+    setIsUploading(false);
+    setUploadProgress(0);
   };
 
   const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {
-      setResumeFile(e.target.files[0]);
+      const file = e.target.files[0];
+      
+      // Validation check
+      if (file.size > 5 * 1024 * 1024) {
+        setSubmitError("File size exceeds 5MB limit.");
+        setResumeFile(null);
+        return;
+      }
+
+      // Start simulated upload progress
+      setSubmitError("");
+      setIsUploading(true);
+      setUploadProgress(0);
+      setResumeFile(null);
+
+      const interval = setInterval(() => {
+        setUploadProgress((prev) => {
+          if (prev >= 100) {
+            clearInterval(interval);
+            setIsUploading(false);
+            setResumeFile(file);
+            triggerToast("Resume upload parsed successfully.");
+            return 100;
+          }
+          return prev + 20;
+        });
+      }, 80);
     }
   };
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+    if (isUploading) {
+      setSubmitError("Please wait for your resume file to finish uploading.");
+      return;
+    }
     if (!resumeFile) {
       setSubmitError("Please upload your resume file (PDF or Word document).");
       return;
@@ -88,7 +137,7 @@ const Careers = () => {
     setSubmitting(true);
     setSubmitError("");
 
-    const cleanPhone = phone.replace(/[\s\-\(\)]/g, "");
+    const cleanPhone = phone.replace(/[\s()-]/g, "");
     const phoneRegex = /^\+?[1-9]\d{6,14}$/;
     if (!phoneRegex.test(cleanPhone)) {
       setSubmitError("Invalid phone number format. Must be 7 to 15 digits, optionally starting with '+'");
@@ -111,6 +160,7 @@ const Careers = () => {
         },
       });
       setSubmitSuccess(true);
+      triggerToast("Application submitted successfully!");
       // Clean inputs
       setFullName("");
       setEmail("");
@@ -128,9 +178,19 @@ const Careers = () => {
         }
       }
       setSubmitError(errorMsg);
+      triggerToast("Application submission failed.");
     } finally {
       setSubmitting(false);
     }
+  };
+
+  // Helpers
+  const formatBytes = (bytes) => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
   return (
@@ -186,8 +246,7 @@ const Careers = () => {
             <div className="text-center py-16 glassmorphism rounded-2xl border border-white/5 p-8">
               <div className="text-brand-muted text-5xl mb-4 flex justify-center"><FaBriefcaseMedical /></div>
               <h3 className="font-display font-bold text-lg text-neutral-800 dark:text-white">No open positions</h3>
-
-              <p className="text-sm text-brand-muted mt-2">We aren't actively hiring for new positions. Check back soon!</p>
+              <p className="text-sm text-brand-muted mt-2 font-sans">We aren't actively hiring for new positions. Check back soon!</p>
             </div>
           ) : (
             <div className="flex flex-col gap-6">
@@ -207,7 +266,7 @@ const Careers = () => {
                       <div className="text-center py-12 glassmorphism rounded-2xl border border-white/5 p-8">
                         <div className="text-brand-muted text-4xl mb-3 flex justify-center"><FaBriefcase /></div>
                         <h4 className="font-display font-bold text-md text-neutral-800 dark:text-white">No positions match "{activeFilter}"</h4>
-                        <p className="text-xs text-brand-muted mt-1">Try selecting another filter category.</p>
+                        <p className="text-xs text-brand-muted mt-1 font-sans">Try selecting another filter category.</p>
                       </div>
                     );
                   }
@@ -238,15 +297,14 @@ const Careers = () => {
                           </div>
                         </div>
                         
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleApplyClick(job);
-                          }}
-                          className="px-5 py-2 text-xs font-semibold rounded gradient-brand hover:brightness-110 text-white cursor-pointer transition-all duration-200 self-start sm:self-center"
-                        >
-                          Apply Now
-                        </button>
+                        <div onClick={(e) => e.stopPropagation()}>
+                          <RippleButton
+                            onClick={() => handleApplyClick(job)}
+                            className="px-5 py-2 text-xs font-semibold rounded gradient-brand text-white cursor-pointer"
+                          >
+                            Apply Now
+                          </RippleButton>
+                        </div>
                       </div>
 
                       {/* Job Description (Expandable) */}
@@ -318,17 +376,41 @@ const Careers = () => {
 
               {submitSuccess ? (
                 <div className="flex flex-col items-center justify-center text-center py-10 gap-4">
-                  <div className="text-brand-orange-light text-5xl animate-bounce"><FaCheckCircle /></div>
+                  {/* Re-designed vector drawn SVG checkmark */}
+                  <svg className="w-20 h-20 text-brand-orange-light mb-4" viewBox="0 0 52 52">
+                    <motion.circle
+                      cx="26"
+                      cy="26"
+                      r="24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="3.5"
+                      initial={{ pathLength: 0 }}
+                      animate={{ pathLength: 1 }}
+                      transition={{ duration: 0.6, ease: "easeOut" }}
+                    />
+                    <motion.path
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="3.5"
+                      strokeLinecap="round"
+                      d="M15 27.5l7.5 7.5 15-15"
+                      initial={{ pathLength: 0 }}
+                      animate={{ pathLength: 1 }}
+                      transition={{ duration: 0.4, delay: 0.5, ease: "easeOut" }}
+                    />
+                  </svg>
+
                   <h4 className="font-display font-bold text-lg text-neutral-800 dark:text-white">Application Received!</h4>
-                  <p className="text-sm text-neutral-600 dark:text-brand-muted max-w-sm">
+                  <p className="text-sm text-neutral-600 dark:text-brand-muted max-w-sm leading-relaxed font-sans">
                     Thank you for applying. Our engineering recruitment team will review your credentials and contact you within 3 business days.
                   </p>
-                  <button
+                  <RippleButton
                     onClick={() => setSelectedJob(null)}
                     className="mt-6 px-6 py-2 text-xs font-semibold rounded gradient-brand text-white cursor-pointer"
                   >
                     Close Window
-                  </button>
+                  </RippleButton>
                 </div>
               ) : (
                 <form onSubmit={handleFormSubmit} className="flex flex-col gap-4 overflow-y-auto pr-1 select-text">
@@ -347,7 +429,7 @@ const Careers = () => {
                       required
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
-                      className="w-full px-4 py-2.5 text-sm bg-white dark:bg-brand-black border border-neutral-300 dark:border-white/5 rounded focus:border-brand-orange-mid focus:outline-none text-neutral-800 dark:text-white"
+                      className="w-full px-4 py-2.5 text-sm bg-white dark:bg-brand-black border border-neutral-300 dark:border-white/5 rounded focus:border-brand-orange-mid focus:outline-none text-neutral-800 dark:text-white transition-colors"
                       placeholder="Jane Doe"
                     />
                   </div>
@@ -361,7 +443,7 @@ const Careers = () => {
                         required
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="w-full px-4 py-2.5 text-sm bg-white dark:bg-brand-black border border-neutral-300 dark:border-white/5 rounded focus:border-brand-orange-mid focus:outline-none text-neutral-800 dark:text-white"
+                        className="w-full px-4 py-2.5 text-sm bg-white dark:bg-brand-black border border-neutral-300 dark:border-white/5 rounded focus:border-brand-orange-mid focus:outline-none text-neutral-800 dark:text-white transition-colors"
                         placeholder="jane@company.com"
                       />
                     </div>
@@ -372,29 +454,69 @@ const Careers = () => {
                         required
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
-                        className="w-full px-4 py-2.5 text-sm bg-white dark:bg-brand-black border border-neutral-300 dark:border-white/5 rounded focus:border-brand-orange-mid focus:outline-none text-neutral-800 dark:text-white"
+                        className="w-full px-4 py-2.5 text-sm bg-white dark:bg-brand-black border border-neutral-300 dark:border-white/5 rounded focus:border-brand-orange-mid focus:outline-none text-neutral-800 dark:text-white transition-colors"
                         placeholder="+1 (555) 000-0000"
                       />
                     </div>
                   </div>
 
-                  {/* Resume Upload */}
+                  {/* Resume Upload (with simulated progress & state feedback) */}
                   <div className="flex flex-col gap-1.5">
                     <label className="text-xs text-neutral-700 dark:text-brand-muted font-semibold">Resume / CV (PDF or DOCX) *</label>
                     <div className="relative border border-dashed border-neutral-300 dark:border-white/10 hover:border-brand-orange-mid/30 rounded p-6 text-center bg-neutral-50 dark:bg-brand-black cursor-pointer transition-colors duration-200">
                       <input
                         type="file"
-                        required
+                        required={!resumeFile}
                         accept=".pdf,.docx,.doc"
                         onChange={handleFileChange}
                         className="absolute inset-0 opacity-0 cursor-pointer"
+                        disabled={isUploading}
                       />
+                      
                       <div className="flex flex-col items-center gap-2">
-                        <span className="text-brand-orange-light text-xl"><FaPaperclip /></span>
-                        <span className="text-xs text-neutral-600 dark:text-brand-gray font-medium">
-                          {resumeFile ? resumeFile.name : "Click to select or drag file here"}
-                        </span>
-                        <span className="text-[10px] text-neutral-500 dark:text-brand-muted">Max file size: 5MB</span>
+                        {isUploading ? (
+                          <>
+                            {/* Upload Progress Loader */}
+                            <div className="w-10 h-10 rounded-full border-2 border-neutral-200 dark:border-neutral-800 border-t-brand-orange-mid animate-spin flex items-center justify-center mb-1" />
+                            <span className="text-xs font-semibold text-brand-orange-light">
+                              Uploading Resume... {uploadProgress}%
+                            </span>
+                            <div className="w-32 h-1.5 bg-neutral-200 dark:bg-neutral-800 rounded-full overflow-hidden">
+                              <motion.div 
+                                className="h-full bg-brand-orange-mid"
+                                initial={{ width: "0%" }}
+                                animate={{ width: `${uploadProgress}%` }}
+                                transition={{ duration: 0.1 }}
+                              />
+                            </div>
+                          </>
+                        ) : resumeFile ? (
+                          <>
+                            {/* Success Upload State */}
+                            <motion.span 
+                              initial={{ scale: 0 }}
+                              animate={{ scale: 1 }}
+                              className="text-emerald-500 text-2xl"
+                            >
+                              <FaCheckCircle />
+                            </motion.span>
+                            <span className="text-xs text-neutral-800 dark:text-white font-bold flex items-center gap-1 font-sans">
+                              <FaFileAlt className="text-neutral-500" /> {resumeFile.name}
+                            </span>
+                            <span className="text-[10px] text-emerald-500 font-bold uppercase tracking-wider">
+                              Successfully Uploaded ({formatBytes(resumeFile.size)})
+                            </span>
+                          </>
+                        ) : (
+                          <>
+                            {/* Initial Upload State */}
+                            <span className="text-brand-orange-light text-xl"><FaPaperclip /></span>
+                            <span className="text-xs text-neutral-600 dark:text-brand-gray font-medium font-sans">
+                              Click to select or drag file here
+                            </span>
+                            <span className="text-[10px] text-neutral-500 dark:text-brand-muted">Max file size: 5MB</span>
+                          </>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -406,25 +528,43 @@ const Careers = () => {
                       rows={3}
                       value={coverLetter}
                       onChange={(e) => setCoverLetter(e.target.value)}
-                      className="w-full px-4 py-2.5 text-sm bg-white dark:bg-brand-black border border-neutral-300 dark:border-white/5 rounded focus:border-brand-orange-mid focus:outline-none text-neutral-800 dark:text-white resize-none"
+                      className="w-full px-4 py-2.5 text-sm bg-white dark:bg-brand-black border border-neutral-300 dark:border-white/5 rounded focus:border-brand-orange-mid focus:outline-none text-neutral-800 dark:text-white resize-none transition-colors"
                       placeholder="Tell us why you are a fit for this position..."
                     />
                   </div>
 
                   {/* Submit button */}
-                  <button
+                  <RippleButton
                     type="submit"
-                    disabled={submitting}
-                    className="w-full mt-2 py-3 rounded text-sm font-semibold gradient-brand hover:brightness-110 text-white cursor-pointer disabled:opacity-50 transition-all duration-200"
+                    disabled={submitting || isUploading}
+                    className="w-full mt-2 py-3 rounded text-sm font-semibold gradient-brand text-white"
                   >
                     {submitting ? "Submitting Application..." : "Submit Application"}
-                  </button>
+                  </RippleButton>
 
                 </form>
               )}
 
             </motion.div>
           </div>
+        )}
+      </AnimatePresence>
+
+      {/* Floating Toast Notification */}
+      <AnimatePresence>
+        {showToast && (
+          <motion.div
+            initial={{ opacity: 0, y: 50, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.9 }}
+            className="fixed bottom-6 right-6 z-50 bg-neutral-900 dark:bg-neutral-950 border border-brand-orange-mid/30 text-white px-5 py-3.5 rounded-xl shadow-2xl flex items-center gap-3 font-sans text-xs"
+          >
+            <div className="w-5 h-5 rounded-full bg-brand-orange-mid flex items-center justify-center text-white text-[10px] font-bold">✓</div>
+            <div>
+              <h5 className="font-bold text-white uppercase tracking-wider mb-0.5 font-display">Careers System</h5>
+              <p className="text-neutral-400">{toastMessage}</p>
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
 

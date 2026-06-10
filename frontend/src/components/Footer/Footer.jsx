@@ -1,10 +1,10 @@
-import React from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FaArrowUp, FaEnvelope, FaPhone, FaMapMarkerAlt, FaYoutube, FaInstagram } from 'react-icons/fa';
+import { FaArrowUp, FaYoutube, FaInstagram } from 'react-icons/fa';
 
 const Footer = () => {
-  const [email, setEmail] = React.useState("");
-  const [subscribed, setSubscribed] = React.useState(false);
+  const [email, setEmail] = useState("");
+  const [subscribed, setSubscribed] = useState(false);
 
   const handleSubscribe = (e) => {
     e.preventDefault();
